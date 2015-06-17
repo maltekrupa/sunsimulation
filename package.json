@@ -1,0 +1,11 @@
+{
+  "name": "sunsimulation",
+  "version": "0.0.1",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "browser-sync": "^2.7.10",
+    "gulp": "^3.9.0",
+    "gulp-sass": "^2.0.1"
+  }
+}
