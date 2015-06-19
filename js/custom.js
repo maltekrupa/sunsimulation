@@ -23,6 +23,9 @@ window.onload = function() {
     light.position.set( 10, 0, 10 );
     scene.add( light );
 
+    axes = buildAxes( 1000 );
+    scene.add(axes);
+
     renderer.setClearColor( 0xdddddd, 1);
     renderer.render( scene, camera );
 
