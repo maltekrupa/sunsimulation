@@ -1,5 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
-/*global THREE, Coordinates, document, window  */
+// Globals
 var camera, scene, renderer;
 var cameraControls;
 
@@ -33,8 +32,8 @@ function init() {
     scene.add(axes);
 
     // Insert custom stuff
-    mesh = buildHouse();
-    scene.add( mesh );
+    house = buildHouse();
+    scene.add( house );
 
     renderer.setClearColor( 0xdddddd, 1);
     renderer.render( scene, camera );
