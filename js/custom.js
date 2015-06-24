@@ -4,6 +4,11 @@ var cameraControls;
 
 var clock = new THREE.Clock();
 
+// Define controls for dat.GUI
+var controls = new function() {
+    this.light = 0;
+};
+
 function init() {
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -34,6 +39,8 @@ function init() {
     // Insert custom stuff
     house = buildHouse();
     scene.add( house );
+    ground = buildGround( 100 );
+    scene.add( ground );
 
     renderer.setClearColor( 0xdddddd, 1);
     renderer.render( scene, camera );
@@ -45,6 +52,16 @@ function buildHouse() {
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
     mesh.position.y = 0.5;
+    mesh.position.z = 0;
+    return mesh;
+};
+
+function buildGround( size ) {
+    var geometry = new THREE.BoxGeometry( size, 0.1, size );
+    var material = new THREE.MeshLambertMaterial( { color: 0xFFFFFF } );
+    var mesh = new THREE.Mesh( geometry, material );
+    mesh.position.x = 0;
+    mesh.position.y = -0.05;
     mesh.position.z = 0;
     return mesh;
 };
@@ -83,4 +100,4 @@ function buildAxis( src, dst, colorHex, dashed ) {
 
 window.onload = function() {
     init();
-}
+};
