@@ -63,7 +63,7 @@ function init() {
 
     renderer.setClearColor( 0xdddddd, 1);
     renderer.shadowMapEnabled = true;
-    renderer.shadowMapSoft = false;
+    renderer.shadowMapSoft = true;
     renderer.shadowMapType = THREE.PCFSoftShadowMap;
     renderer.render( scene, camera );
 
@@ -86,10 +86,12 @@ function render() {
         camera.lookAt( scene.position );
         camera.updateProjectionMatrix();
     }
-    //var angle   = Date.now()/1000 * Math.PI;
-    //light.position.x    = Math.cos(angle*-0.1)*20;
-    //light.position.y    = 10 + Math.sin(angle*0.5)*6;
-    //light.position.z    = Math.sin(angle*-0.1)*20;
+    // Speed of sun movement (time for a full loop in seconds)
+    var speed = 6;
+    var speedScale = (0.001*2*Math.PI)/speed;
+    var angle = Date.now()*speedScale;
+    light.position.x = Math.sin(angle)*RADIUS;
+    light.position.z = Math.cos(angle)*RADIUS;
 
     renderer.render( scene, camera );
 }
@@ -109,7 +111,7 @@ function buildLight() {
     light.position.set(RADIUS, SUN_HEIGHT, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
-    light.shadowDarkness = 0.2;
+    light.shadowDarkness = 0.4;
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
@@ -149,7 +151,7 @@ function buildGround( radius ) {
     var material = new THREE.MeshLambertMaterial( { color: 0x008000 } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
-    mesh.position.y = -1;
+    mesh.position.y = 0;
     mesh.position.z = 0;
     mesh.rotation.x = (Math.PI / 2) * -1;
     return mesh;
