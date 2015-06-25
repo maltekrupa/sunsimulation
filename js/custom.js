@@ -2,6 +2,8 @@
 
 // Globals
 var camera, scene, renderer, light;
+// Objects
+var house, ground, newHouse;
 // Mouse positions
 var mouseX = 0, mouseY = 0;
 // FPS statistics
@@ -15,8 +17,10 @@ var RADIUS = 250;
 var SUN_HEIGHT = 125;
 
 // Define controls for dat.GUI
-var controls = new function() {
-    this.light = 0;
+var Controls = new function() {
+    this.shadow = 0.5;
+    this.distanceHouse = 15;
+    this.distanceNewHouse = 30;
 };
 
 function init() {
@@ -42,11 +46,11 @@ function init() {
     scene.add(axes);
 
     // Insert custom stuff
-    var house = buildHouse(10, 10, 10, 15);                 // A house
+    house = buildHouse(10, 10, 10, 15);                 // A house
     scene.add( house );
-    var newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
+    newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
     scene.add( newHouse );
-    var ground = buildGround( RADIUS );                         // The ground
+    ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
 
     //var ambient = new THREE.AmbientLight( 0x444444 );
@@ -92,6 +96,10 @@ function render() {
     var angle = Date.now()*speedScale;
     light.position.x = Math.sin(angle)*RADIUS;
     light.position.z = Math.cos(angle)*RADIUS;
+    light.shadowDarkness = Controls.shadow;
+
+    house.position.x = Controls.distanceHouse * -1;
+    newHouse.position.x = Controls.distanceNewHouse;
 
     renderer.render( scene, camera );
 }
@@ -111,7 +119,7 @@ function buildLight() {
     light.position.set(RADIUS, SUN_HEIGHT, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
-    light.shadowDarkness = 0.4;
+    light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
@@ -206,6 +214,11 @@ function onKeyDown( event ) {
 }
 
 window.onload = function() {
+    var gui = new dat.GUI();
+    gui.add(Controls, 'shadow', 0, 1);
+    gui.add(Controls, 'distanceHouse', 0, 100);
+    gui.add(Controls, 'distanceNewHouse', 0, 100);
+
     init();
     animate();
 };
