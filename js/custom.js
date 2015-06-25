@@ -2,7 +2,13 @@
 
 // Globals
 var camera, scene, renderer;
-
+// Mouse positions
+var mouseX = 0, mouseY = 0;
+// FPS statistics
+var stats;
+// boolean to check if we can move the camera
+var spacePressed = false;
+// A clock to keep track of time
 var clock = new THREE.Clock();
 
 // Define controls for dat.GUI
@@ -33,9 +39,11 @@ function init() {
     scene.add(axes);
 
     // Insert custom stuff
-    var house = buildHouse();                               // A house
+    var house = buildHouse(10, 10, 10, 15);                 // A house
     scene.add( house );
-    var ground = buildGround( 50 );                        // The ground
+    var newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
+    scene.add( newHouse );
+    var ground = buildGround( 200 );                         // The ground
     scene.add( ground );
 
     var ambient = new THREE.AmbientLight( 0x444444 );
@@ -51,47 +59,89 @@ function init() {
     renderer.shadowMapEnabled = true;
     renderer.shadowMapSoft = true;
     renderer.render( scene, camera );
-};
+
+    // Add stats view
+    stats = new Stats();
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.top = '0px';
+    document.body.appendChild( stats.domElement );
+
+    // Add event listener for mouse movement
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+    // Add event listener for key pressing
+    document.addEventListener( 'keydown', onKeyDown, false );
+}
+
+function render() {
+    if(spacePressed) {
+        camera.position.x += mouseX * 0.05;
+        camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
+        camera.lookAt( scene.position );
+        camera.updateProjectionMatrix();
+    }
+
+    renderer.render( scene, camera );
+}
+
+function animate() {
+    // Update view related information
+    render();
+    // Update statistics of FPV
+    stats.update();
+
+    requestAnimationFrame( animate );
+}
 
 function buildLight() {
     // Lights
-    var light = new THREE.DirectionalLight( 0xFFFFFF, 1 );
-    light.position.set( 10, 50, 40 );
-    light.target.position.set( 0, 0, 0 );
+    var light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(0, 2, 2);
+    light.target.position.set(0, 0, 0);
     light.castShadow = true;
-
-    // only for debugging
-    light.shadowCameraVisible = true;
+    light.shadowDarkness = 0.5;
+    light.shadowCameraVisible = true; // only for debugging
     // these six values define the boundaries of the yellow box seen above
-    light.shadowCameraNear = 1;
-    light.shadowCameraFar = 50;
-    light.shadowMapWidth = 512;
-    light.shadowMapHeight = 512;
+    light.shadowCameraNear = 2;
+    light.shadowCameraFar = 5;
+    light.shadowCameraLeft = -0.5;
+    light.shadowCameraRight = 0.5;
+    light.shadowCameraTop = 0.5;
+    light.shadowCameraBottom = -0.5;
 
     return light
-};
+}
 
-function buildHouse() {
-    var geometry = new THREE.BoxGeometry( 10, 10, 10 );
+function buildHouse( x, y, z, distanceFromCenter ) {
+    var geometry = new THREE.BoxGeometry( x, y, z );
     var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
     var mesh = new THREE.Mesh( geometry, material );
-    mesh.position.x = 0;
-    mesh.position.y = 15;
+    mesh.position.x = distanceFromCenter * -1;
+    mesh.position.y = y/2;
     mesh.position.z = 0;
     return mesh;
-};
+}
+
+function buildNewHouse( x, y, z, distanceFromCenter ) {
+    var geometry = new THREE.BoxGeometry( x, y, z );
+    var material = new THREE.MeshLambertMaterial( { color: 0xFFFFA0 } );
+    var mesh = new THREE.Mesh( geometry, material );
+    mesh.position.x = distanceFromCenter;
+    mesh.position.y = y/2;
+    mesh.position.z = 0;
+    return mesh;
+}
 
 function buildGround( radius ) {
     var segments = 128;
     var geometry = new THREE.CircleGeometry( radius, segments );
-    var material = new THREE.MeshLambertMaterial( { color: 0xFFFFFF } );
+    var material = new THREE.MeshLambertMaterial( { color: 0x008000 } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
     mesh.position.y = -1;
     mesh.position.z = 0;
     mesh.rotation.x = (Math.PI / 2) * -1;
     return mesh;
-};
+}
 
 function buildAxes( length ) {
     var axes = new THREE.Object3D();
@@ -104,7 +154,7 @@ function buildAxes( length ) {
     axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
 
     return axes;
-};
+}
 
 function buildAxis( src, dst, colorHex, dashed ) {
     var geom = new THREE.Geometry(),
@@ -123,8 +173,25 @@ function buildAxis( src, dst, colorHex, dashed ) {
     var axis = new THREE.Line( geom, mat, THREE.LinePieces );
 
     return axis;
-};
+}
+
+function onDocumentMouseMove( event ) {
+    mouseX = ( event.clientX - window.innerWidth / 2 );
+    mouseY = ( event.clientY - window.innerHeight / 2 );
+}
+
+function onKeyDown( event ) {
+      var keyCode = event.keyCode;
+      if(keyCode==77) {
+          if(spacePressed) {
+              spacePressed = false;
+          } else {
+              spacePressed = true;
+          }
+      }
+}
 
 window.onload = function() {
     init();
+    animate();
 };
