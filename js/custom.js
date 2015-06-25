@@ -25,7 +25,7 @@ function init() {
         0.1,                                            // Near plane
         10000                                           // Far plane
     );
-    camera.position.set( -75, 75, 75 );
+    camera.position.set( 75, 75, 75 );
     camera.lookAt( scene.position );
 
     // Axes
