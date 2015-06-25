@@ -8,6 +8,8 @@ var house, ground, newHouse;
 var mouseX = 0, mouseY = 0;
 // FPS statistics
 var stats;
+// Keyboard controls
+var kcontrols;
 // boolean to check if we can move the camera
 var spacePressed = false;
 // A clock to keep track of time
@@ -41,6 +43,13 @@ function init() {
     );
     camera.position.set( 75, 75, 75 );
     camera.lookAt( scene.position );
+
+    // Configure keyboard controls 
+    kcontrols = new THREE.FlyControls( camera );
+    kcontrols.movementSpeed = 1000;
+    kcontrols.domElement = document.body;
+    kcontrols.rollSpeed = Math.PI / 24;
+    kcontrols.autoForward = false;
 
     // Axes
     var axes = buildAxes( 1000 );
@@ -85,6 +94,8 @@ function init() {
 }
 
 function render() {
+    var delta = clock.getDelta();
+
     if(spacePressed) {
         camera.position.x += mouseX * 0.05;
         camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
@@ -102,6 +113,9 @@ function render() {
 
     house.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
+
+    kcontrols.movementSpeed = 50;
+    kcontrols.update( delta );
 
     renderer.render( scene, camera );
 }
