@@ -1,7 +1,7 @@
 "use strict";
 
 // Globals
-var camera, scene, renderer;
+var camera, scene, renderer, light;
 // Mouse positions
 var mouseX = 0, mouseY = 0;
 // FPS statistics
@@ -10,6 +10,9 @@ var stats;
 var spacePressed = false;
 // A clock to keep track of time
 var clock = new THREE.Clock();
+// Global radius and light height
+var RADIUS = 250;
+var SUN_HEIGHT = 125;
 
 // Define controls for dat.GUI
 var controls = new function() {
@@ -43,21 +46,25 @@ function init() {
     scene.add( house );
     var newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
     scene.add( newHouse );
-    var ground = buildGround( 200 );                         // The ground
+    var ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
 
-    var ambient = new THREE.AmbientLight( 0x444444 );
-    scene.add( ambient );
+    //var ambient = new THREE.AmbientLight( 0x444444 );
+    //scene.add( ambient );
 
-    var light = buildLight();
+    light = buildLight();
     scene.add(light);
 
     house.castShadow = true;
+    house.receiveShadow = true;
+    newHouse.castShadow = true;
+    newHouse.receiveShadow = true;
     ground.receiveShadow = true;
 
     renderer.setClearColor( 0xdddddd, 1);
     renderer.shadowMapEnabled = true;
-    renderer.shadowMapSoft = true;
+    renderer.shadowMapSoft = false;
+    renderer.shadowMapType = THREE.PCFSoftShadowMap;
     renderer.render( scene, camera );
 
     // Add stats view
@@ -79,6 +86,10 @@ function render() {
         camera.lookAt( scene.position );
         camera.updateProjectionMatrix();
     }
+    //var angle   = Date.now()/1000 * Math.PI;
+    //light.position.x    = Math.cos(angle*-0.1)*20;
+    //light.position.y    = 10 + Math.sin(angle*0.5)*6;
+    //light.position.z    = Math.sin(angle*-0.1)*20;
 
     renderer.render( scene, camera );
 }
@@ -94,19 +105,20 @@ function animate() {
 
 function buildLight() {
     // Lights
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(0, 2, 2);
+    var light = new THREE.SpotLight(0xffffff);
+    light.position.set(RADIUS, SUN_HEIGHT, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
-    light.shadowDarkness = 0.5;
+    light.shadowDarkness = 0.2;
     light.shadowCameraVisible = true; // only for debugging
+
     // these six values define the boundaries of the yellow box seen above
-    light.shadowCameraNear = 2;
-    light.shadowCameraFar = 5;
-    light.shadowCameraLeft = -0.5;
-    light.shadowCameraRight = 0.5;
-    light.shadowCameraTop = 0.5;
-    light.shadowCameraBottom = -0.5;
+    light.shadowCameraNear = 4;
+    light.shadowCameraFar = RADIUS*2;
+    light.shadowCameraLeft = -15;
+    light.shadowCameraRight = 15;
+    light.shadowCameraTop = 15;
+    light.shadowCameraBottom = -15;
 
     return light
 }
