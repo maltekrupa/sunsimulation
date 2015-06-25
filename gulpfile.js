@@ -9,6 +9,4 @@ gulp.task('browser-sync', function() {
     });
 });
 
-gulp.task('default', ['sass', 'browser-sync'], function () {
-    gulp.watch("scss/*.scss", ['sass']);
-});
+gulp.task('default', ['browser-sync']);
