@@ -1,6 +1,7 @@
+"use strict";
+
 // Globals
 var camera, scene, renderer;
-var cameraControls;
 
 var clock = new THREE.Clock();
 
@@ -24,45 +25,71 @@ function init() {
         0.1,                                            // Near plane
         10000                                           // Far plane
     );
-    camera.position.set( -15, 10, 10 );
+    camera.position.set( -75, 75, 75 );
     camera.lookAt( scene.position );
 
-    // Lights
-    var light = new THREE.PointLight( 0xFFFF00 );
-    light.position.set( 12, 12, 10 );
-    scene.add( light );
-
     // Axes
-    axes = buildAxes( 1000 );
+    var axes = buildAxes( 1000 );
     scene.add(axes);
 
     // Insert custom stuff
-    house = buildHouse();
+    var house = buildHouse();                               // A house
     scene.add( house );
-    ground = buildGround( 100 );
+    var ground = buildGround( 50 );                        // The ground
     scene.add( ground );
 
+    var ambient = new THREE.AmbientLight( 0x444444 );
+    scene.add( ambient );
+
+    var light = buildLight();
+    scene.add(light);
+
+    house.castShadow = true;
+    ground.receiveShadow = true;
+
     renderer.setClearColor( 0xdddddd, 1);
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMapSoft = true;
     renderer.render( scene, camera );
 };
 
+function buildLight() {
+    // Lights
+    var light = new THREE.DirectionalLight( 0xFFFFFF, 1 );
+    light.position.set( 10, 50, 40 );
+    light.target.position.set( 0, 0, 0 );
+    light.castShadow = true;
+
+    // only for debugging
+    light.shadowCameraVisible = true;
+    // these six values define the boundaries of the yellow box seen above
+    light.shadowCameraNear = 1;
+    light.shadowCameraFar = 50;
+    light.shadowMapWidth = 512;
+    light.shadowMapHeight = 512;
+
+    return light
+};
+
 function buildHouse() {
-    var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    var geometry = new THREE.BoxGeometry( 10, 10, 10 );
     var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
-    mesh.position.y = 0.5;
+    mesh.position.y = 15;
     mesh.position.z = 0;
     return mesh;
 };
 
-function buildGround( size ) {
-    var geometry = new THREE.BoxGeometry( size, 0.1, size );
+function buildGround( radius ) {
+    var segments = 128;
+    var geometry = new THREE.CircleGeometry( radius, segments );
     var material = new THREE.MeshLambertMaterial( { color: 0xFFFFFF } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
-    mesh.position.y = -0.05;
+    mesh.position.y = -1;
     mesh.position.z = 0;
+    mesh.rotation.x = (Math.PI / 2) * -1;
     return mesh;
 };
 
