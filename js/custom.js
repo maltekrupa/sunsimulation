@@ -21,6 +21,7 @@ var Controls = new function() {
     this.shadow = 0.5;
     this.distanceHouse = 15;
     this.distanceNewHouse = 30;
+    this.sunGrid = true;
 };
 
 function init() {
@@ -97,6 +98,7 @@ function render() {
     light.position.x = Math.sin(angle)*RADIUS;
     light.position.z = Math.cos(angle)*RADIUS;
     light.shadowDarkness = Controls.shadow;
+    light.shadowCameraVisible = Controls.sunGrid;
 
     house.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
@@ -218,6 +220,7 @@ window.onload = function() {
     gui.add(Controls, 'shadow', 0, 1);
     gui.add(Controls, 'distanceHouse', 0, 100);
     gui.add(Controls, 'distanceNewHouse', 0, 100);
+    gui.add(Controls, 'sunGrid');
 
     init();
     animate();
