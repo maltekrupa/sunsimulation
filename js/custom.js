@@ -140,7 +140,7 @@ function animate() {
 
 function buildLight() {
     // Lights
-    var light = new THREE.SpotLight(0xffffff);
+    var light = new THREE.DirectionalLight(0xffffff);
     light.position.set(RADIUS, SUN_HEIGHT, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
@@ -150,10 +150,10 @@ function buildLight() {
     // these six values define the boundaries of the yellow box seen above
     light.shadowCameraNear = 4;
     light.shadowCameraFar = RADIUS*2;
-    light.shadowCameraLeft = -15;
-    light.shadowCameraRight = 15;
-    light.shadowCameraTop = 15;
-    light.shadowCameraBottom = -15;
+    light.shadowCameraLeft = -RADIUS;
+    light.shadowCameraRight = RADIUS;
+    light.shadowCameraTop = RADIUS;
+    light.shadowCameraBottom = -RADIUS;
 
     return light
 }
