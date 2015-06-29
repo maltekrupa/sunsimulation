@@ -10,8 +10,10 @@ var mouseX = 0, mouseY = 0;
 var stats;
 // Keyboard controls
 var kcontrols;
+// Mouse controls;
+var mcontrols;
 // boolean to check if we can move the camera
-var spacePressed = false;
+var pressM = false;
 // A clock to keep track of time
 var clock = new THREE.Clock();
 // Global radius and light height
@@ -51,6 +53,11 @@ function init() {
     kcontrols.rollSpeed = Math.PI / 24;
     kcontrols.autoForward = false;
 
+    // Configure mouse controls
+    //mcontrols = new THREE.OrbitControls( camera );
+    //mcontrols.damping = 0.2;
+    //mcontrols.addEventListener( 'change', render );
+
     // Axes
     var axes = buildAxes( 1000 );
     scene.add(axes);
@@ -63,8 +70,9 @@ function init() {
     ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
 
-    //var ambient = new THREE.AmbientLight( 0x444444 );
-    //scene.add( ambient );
+    // Ambient light to add some indirect lightning to the scene.
+    var ambient = new THREE.AmbientLight( 0x444444 );
+    scene.add( ambient );
 
     light = buildLight();
     scene.add(light);
@@ -96,12 +104,13 @@ function init() {
 function render() {
     var delta = clock.getDelta();
 
-    if(spacePressed) {
+    if(pressM) {
         camera.position.x += mouseX * 0.05;
         camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
         camera.lookAt( scene.position );
         camera.updateProjectionMatrix();
     }
+
     // Speed of sun movement (time for a full loop in seconds)
     var speed = 6;
     var speedScale = (0.001*2*Math.PI)/speed;
@@ -220,11 +229,12 @@ function onDocumentMouseMove( event ) {
 
 function onKeyDown( event ) {
       var keyCode = event.keyCode;
+      // M is pressed
       if(keyCode==77) {
-          if(spacePressed) {
-              spacePressed = false;
+          if(pressM) {
+              pressM = false;
           } else {
-              spacePressed = true;
+              pressM = true;
           }
       }
 }
