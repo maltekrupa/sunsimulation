@@ -25,6 +25,10 @@ var Controls = new function() {
     // Environment
     this.shadow = 0.5;
     this.sunGrid = true;
+    // Date/Time
+    this.day = 0;
+    this.month = 0;
+    this.year = 0;
     // Objects
     this.distanceHouse = 15;
     this.distanceNewHouse = 30;
@@ -143,6 +147,10 @@ window.onload = function() {
     var f1 = gui.addFolder('Environment');
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
+    var f11 = gui.addFolder('Date/Time');
+    f11.add(Controls, 'day', 0, 365).step(1);
+    f11.add(Controls, 'month', 0, 12).step(1);
+    f11.add(Controls, 'year', 0, 2050).step(1);
 
     var f2 = gui.addFolder('Objects');
     f2.add(Controls, 'distanceHouse', 0, 100);
