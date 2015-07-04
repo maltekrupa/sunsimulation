@@ -29,6 +29,7 @@ var Controls = new function() {
     // Environment
     this.shadow = 0.5;
     this.sunGrid = true;
+    this.fog = 0.001;
     // Date/Time
     this.day = 1;
     this.month = 1;
@@ -49,6 +50,7 @@ function init() {
     document.body.appendChild( renderer.domElement );
 
     scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2( 0xA8A8A8, 0.001 );
 
     // Camera
     camera = new THREE.PerspectiveCamera(
@@ -161,15 +163,15 @@ function animate() {
     }
 
     // Speed of sun movement (time for a full loop in seconds)
-    var speed = 6;
-    var speedScale = (0.001*2*Math.PI)/speed;
-    var angle = Date.now()*speedScale;
     var transformDate = currentTime.toDate();
     light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
     light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
     light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
     light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = Controls.sunGrid;
+
+    // Renew fog
+    scene.fog.density = Controls.fog;
 
     // Update positions of the houses after change in gui
     house.position.x = Controls.distanceHouse * -1;
@@ -190,6 +192,7 @@ window.onload = function() {
     var f1 = gui.addFolder('Environment');
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
+    f1.add(Controls, 'fog', 0.001, 0.0025).step(0.0001);
     var f11 = gui.addFolder('Date/Time');
     f11.add(Controls, 'day', 0, 31).step(1);
     f11.add(Controls, 'month', 0, 12).step(1);
