@@ -165,6 +165,15 @@ function updateTime() {
     }
 }
 
+// Update viewport size on window size changes
+function updateSize() {
+    if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
+        windowWidth  = window.innerWidth;
+        windowHeight = window.innerHeight;
+        renderer.setSize ( windowWidth, windowHeight );
+    }
+}
+
 // This is a custom function for a simulated button in dat GUI
 // http://stackoverflow.com/questions/18366229/is-it-possible-to-create-a-button-using-dat-gui/18380889#18380889
 var timeButton = { set:function(){

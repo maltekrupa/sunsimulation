@@ -1,7 +1,9 @@
 "use strict";
 
 // Globals
-var camera, scene, renderer, light;
+var camera, scene, renderer, light, views, view;
+// Windows size
+var windowWidth, windowHeight;
 // Objects
 var house, ground, newHouse;
 // Mouse positions
@@ -43,6 +45,50 @@ var Controls = new function() {
 
 };
 
+var views = [
+    {
+        left: 0,
+        bottom: 0,
+        width: 0.5,
+        height: 1.0,
+        eye: [ 400, 400, 400 ],
+        up: [ 0, 1, 0 ],
+        fov: 60,
+        updateCamera: function ( camera, scene, mouseX, mouseY ) {
+        }
+    },
+    {
+        left: 0.5,
+        bottom: 0,
+        width: 0.5,
+        height: 0.5,
+        eye: [ 0, 200, 0 ],
+        up: [ 0, 1, 0 ],
+        fov: 45,
+        updateCamera: function ( camera, scene, mouseX, mouseY ) {
+        //  camera.position.x -= mouseX * 0.05;
+        //  camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), -2000 );
+            camera.lookAt( scene.position );
+        }
+    },
+    {
+        left: 0.5,
+        bottom: 0.5,
+        width: 0.5,
+        height: 0.5,
+        eye: [ 0, 100, 200 ],
+        up: [ 0, 1, 0 ],
+        fov: 60,
+        updateCamera: function ( camera, scene, mouseX, mouseY ) {
+            if(pressM) {
+                camera.position.x += mouseX * 0.05;
+                camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), -2000 );
+            }
+            camera.lookAt( scene.position );
+        }
+    }
+];
+
 function init() {
     // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -53,14 +99,26 @@ function init() {
     scene.fog = new THREE.FogExp2( 0xA8A8A8, 0.001 );
 
     // Camera
-    camera = new THREE.PerspectiveCamera(
-        35,                                             // Field of view
-        window.innerWidth / window.innerHeight,         // Aspect ratio
-        0.1,                                            // Near plane
-        10000                                           // Far plane
-    );
-    camera.position.set( 400, 400, 400 );
-    camera.lookAt( scene.position );
+    //camera = new THREE.PerspectiveCamera(
+    //    35,                                             // Field of view
+    //    window.innerWidth / window.innerHeight,         // Aspect ratio
+    //    0.1,                                            // Near plane
+    //    10000                                           // Far plane
+    //);
+    //camera.position.set( 400, 400, 400 );
+    //camera.lookAt( scene.position );
+    for (var ii =  0; ii < views.length; ++ii ) {
+        view = views[ii];
+        camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.x = view.eye[ 0 ];
+        camera.position.y = view.eye[ 1 ];
+        camera.position.z = view.eye[ 2 ];
+        camera.up.x = view.up[ 0 ];
+        camera.up.y = view.up[ 1 ];
+        camera.up.z = view.up[ 2 ];
+        camera.lookAt( scene.position );
+        view.camera = camera;
+    }
 
     // A clock object to access the THREEjs clock
     clock = new THREE.Clock();
@@ -69,7 +127,7 @@ function init() {
     currentTime = moment();
 
     // Configure keyboard controls 
-    kcontrols = new THREE.FlyControls( camera );
+    kcontrols = new THREE.FlyControls( views[0].camera );
     kcontrols.movementSpeed = 100;
     kcontrols.domElement = document.body;
     kcontrols.rollSpeed = Math.PI / 24;
@@ -182,6 +240,34 @@ function animate() {
 
     // Update the current time
     updateTime();
+
+    render();
+}
+
+function render() {
+    updateSize();
+
+    for ( var ii = 0; ii < views.length; ++ii ) {
+
+        view = views[ii];
+        camera = view.camera;
+
+        view.updateCamera( camera, scene, mouseX, mouseY );
+
+        var left   = Math.floor( windowWidth  * view.left );
+        var bottom = Math.floor( windowHeight * view.bottom );
+        var width  = Math.floor( windowWidth  * view.width );
+        var height = Math.floor( windowHeight * view.height );
+        renderer.setViewport( left, bottom, width, height );
+        renderer.setScissor( left, bottom, width, height );
+        renderer.enableScissorTest ( true );
+        renderer.setClearColor( view.background );
+
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+
+        renderer.render( scene, camera );
+    }
 
     renderer.render( scene, camera );
 }
