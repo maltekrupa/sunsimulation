@@ -68,6 +68,25 @@ function buildGround( radius ) {
     return mesh;
 }
 
+// Get random positions in a radius. Either uniformly distributed or centered ...
+// http://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/5838991#5838991
+function randomCoordinates( r, uniform ) {
+    r = r || 1000;
+
+    var a = Math.random(),
+    b = Math.random();
+
+    if (uniform) {
+        if (b < a) {
+            c = b;
+            b = a;
+            a = c;
+        }
+    }
+
+    return [b * r * Math.cos( 2 * Math.PI * a / b ), b * r * Math.sin( 2 * Math.PI * a / b )];
+}
+
 function buildAxes( length ) {
     var axes = new THREE.Object3D();
 
