@@ -1,10 +1,13 @@
-function animate() {
-    // Update view related information
-    render();
-    // Update statistics of FPV
-    stats.update();
-
-    requestAnimationFrame( animate );
+if (!String.format) {
+  String.format = function(format) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number] 
+        : match
+      ;
+    });
+  };
 }
 
 function buildLight() {
@@ -135,3 +138,31 @@ function onKeyDown( event ) {
           }
       }
 }
+
+function updateTime() {
+//    // Here we add the delta time from the gui to the current time
+    currentTime.add(delta, Controls.delta);
+    var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
+
+    // Update the visible time by exchanging the objects
+    scene.remove(objectOfTime);
+    textOfTime = new THREE.TextGeometry(timeString, textParams);
+    objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
+    objectOfTime.position.x = RADIUS/4;
+    objectOfTime.position.z = 30;
+    objectOfTime.rotation.x = (Math.PI / 2) * -1;
+    scene.add(objectOfTime);
+}
+
+// This is a custom function for a simulated button in dat GUI
+// http://stackoverflow.com/questions/18366229/is-it-possible-to-create-a-button-using-dat-gui/18380889#18380889
+var timeButton = { set:function(){
+    var timeString = String.format("{0}-{1}-{2} {3}:{4}", Controls.year, Controls.month, Controls.day, Controls.hour, Controls.minute);
+    console.log(timeString);
+    var timestamp = moment(timeString, "YYYY-M-D HH:mm");
+    if( !timestamp.isValid() ) {
+        alert("This does not look like a valid date.");
+        return
+    }
+    currentTime = timestamp;
+}};

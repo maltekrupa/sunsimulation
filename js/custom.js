@@ -6,6 +6,10 @@ var camera, scene, renderer, light;
 var house, ground, newHouse;
 // Mouse positions
 var mouseX = 0, mouseY = 0;
+// Time and date
+var currentTime;
+// Text object to show date and time
+var textParams, textMaterial, textOfTime, objectOfTime;
 // FPS statistics
 var stats;
 // Keyboard controls
@@ -14,10 +18,10 @@ var kcontrols;
 var mcontrols;
 // boolean to check if we can move the camera
 var pressM = false;
-// A clock to keep track of time
-var clock = new THREE.Clock();
+// A clock to keep track of the time
+var clock, time, delta;
 // Global radius and light height
-var RADIUS = 250;
+var RADIUS = 400;
 var SUN_HEIGHT = 125;
 
 // Define controls for dat.GUI
@@ -26,9 +30,12 @@ var Controls = new function() {
     this.shadow = 0.5;
     this.sunGrid = true;
     // Date/Time
-    this.day = 0;
-    this.month = 0;
-    this.year = 0;
+    this.day = 1;
+    this.month = 1;
+    this.year = 2000;
+    this.hour = 18;
+    this.minute = 27;
+    this.delta = 'm';
     // Objects
     this.distanceHouse = 15;
     this.distanceNewHouse = 30;
@@ -53,6 +60,12 @@ function init() {
     camera.position.set( 400, 400, 400 );
     camera.lookAt( scene.position );
 
+    // A clock object to access the THREEjs clock
+    clock = new THREE.Clock();
+
+    // A currentTime dateobject for the simulated time
+    currentTime = moment();
+
     // Configure keyboard controls 
     kcontrols = new THREE.FlyControls( camera );
     kcontrols.movementSpeed = 100;
@@ -76,6 +89,23 @@ function init() {
     scene.add( newHouse );
     ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
+
+    // Create text of current simulation time
+    textParams = {
+        size:           15,    // size of the text
+        height:     0.5,   // thickness to extrude text
+        curveSegments: 3,       // number of points on the curves
+        font:           'helvetiker',       // font name
+        weight:         'normal',       // font weight (normal, bold)
+        style:      'normal',       // font style  (normal, italics)
+    }
+    textMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
+    textOfTime = new THREE.TextGeometry(currentTime.toString(), textParams);
+    objectOfTime = new THREE.Mesh(textOfTime, textMaterial); 
+    objectOfTime.position.x = RADIUS/4;
+    objectOfTime.position.z = 30;
+    objectOfTime.rotation.x = (Math.PI / 2) * -1;
+    scene.add(objectOfTime);
 
     // Ambient light to add some indirect lightning to the scene.
     var ambient = new THREE.AmbientLight( 0x404040 );
@@ -111,8 +141,16 @@ function init() {
     document.addEventListener( 'keydown', onKeyDown, false );
 }
 
-function render() {
-    var delta = clock.getDelta();
+function animate() {
+    // Request new frame from browser
+    requestAnimationFrame( animate );
+    // Update statistics of FPV
+    stats.update();
+
+    // The time since the last frame
+    delta = clock.getDelta();
+    // The time sind intantiation the clock
+    time = clock.getElapsedTime();
 
     // If we press M on the keyboard, the position of the camera changes.
     if(pressM) {
@@ -138,6 +176,9 @@ function render() {
     // Update the controls position
     kcontrols.update( delta );
 
+    // Update the current time
+    updateTime();
+
     renderer.render( scene, camera );
 }
 
@@ -148,9 +189,13 @@ window.onload = function() {
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
     var f11 = gui.addFolder('Date/Time');
-    f11.add(Controls, 'day', 0, 365).step(1);
+    f11.add(Controls, 'day', 0, 31).step(1);
     f11.add(Controls, 'month', 0, 12).step(1);
-    f11.add(Controls, 'year', 0, 2050).step(1);
+    f11.add(Controls, 'year', 1900, 2100).step(1);
+    f11.add(Controls, 'hour', 0, 23).step(1);
+    f11.add(Controls, 'minute', 0, 59).step(1);
+    f11.add(timeButton, 'set');
+    f11.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
 
     var f2 = gui.addFolder('Objects');
     f2.add(Controls, 'distanceHouse', 0, 100);
