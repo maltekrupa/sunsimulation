@@ -19,7 +19,7 @@ var mcontrols;
 // boolean to check if we can move the camera
 var pressM = false;
 // A clock to keep track of the time
-var clock, time, delta;
+var clock, time, delta, tmpDelta = 0.0;
 // Global radius and light height
 var RADIUS = 400;
 var SUN_HEIGHT = 125;

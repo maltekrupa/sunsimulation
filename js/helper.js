@@ -20,7 +20,7 @@ function buildLight() {
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
-    light.shadowCameraNear = 4;
+    light.shadowCameraNear = 20;
     light.shadowCameraFar = RADIUS*2;
     light.shadowCameraLeft = -RADIUS;
     light.shadowCameraRight = RADIUS;
@@ -140,19 +140,25 @@ function onKeyDown( event ) {
 }
 
 function updateTime() {
-//    // Here we add the delta time from the gui to the current time
     currentTime.add(delta, Controls.delta);
-    var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
+    tmpDelta += delta;
+    if( tmpDelta >= 1 ) {
+        // Here we add the delta time from the gui to the current time
+        var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
 
-    // Update the visible time by exchanging the objects
-    scene.remove(objectOfTime);
-    textOfTime = new THREE.TextGeometry(timeString, textParams);
-    objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
-    objectOfTime.position.x = RADIUS/4;
-    objectOfTime.position.z = 30;
-    objectOfTime.rotation.x = (Math.PI / 2) * -1;
-    objectOfTime.castShadow = true;
-    scene.add(objectOfTime);
+        // Update the visible time by exchanging the objects
+        scene.remove(objectOfTime);
+        delete(textOfTime);
+        delete(objectOfTime);
+        textOfTime = new THREE.TextGeometry(timeString, textParams);
+        objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
+        objectOfTime.position.x = RADIUS/4;
+        objectOfTime.position.z = 30;
+        objectOfTime.rotation.x = (Math.PI / 2) * -1;
+        objectOfTime.castShadow = true;
+        scene.add(objectOfTime);
+        tmpDelta = 0;
+    }
 }
 
 // This is a custom function for a simulated button in dat GUI
