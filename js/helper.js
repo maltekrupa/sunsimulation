@@ -9,7 +9,7 @@ function animate() {
 
 function buildLight() {
     // Lights
-    var light = new THREE.DirectionalLight(0xffffff);
+    var light = new THREE.SpotLight(0xffffff);
     light.position.set(RADIUS, SUN_HEIGHT, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
