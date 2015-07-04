@@ -128,15 +128,19 @@ function onDocumentMouseMove( event ) {
 }
 
 function onKeyDown( event ) {
-      var keyCode = event.keyCode;
-      // M is pressed
-      if(keyCode==77) {
-          if(pressM) {
-              pressM = false;
-          } else {
-              pressM = true;
-          }
-      }
+    var keyCode = event.keyCode;
+    // M is pressed
+    if(keyCode==77) {
+        if(pressM) {
+            pressM = false;
+        } else {
+            pressM = true;
+        }
+    }
+    // C is pressed.
+    if(keyCode==67) {
+        camera.position.set( 400, 400, 400 );
+    }
 }
 
 function updateTime() {
