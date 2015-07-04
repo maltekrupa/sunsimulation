@@ -164,8 +164,13 @@ function animate() {
     var speed = 6;
     var speedScale = (0.001*2*Math.PI)/speed;
     var angle = Date.now()*speedScale;
-    light.position.x = Math.sin(angle)*RADIUS;
-    light.position.z = Math.cos(angle)*RADIUS;
+    var transformDate = currentTime.toDate();
+    console.log(SunCalcCartesian.getX(transformDate, 50.111512, 8.680506));
+    console.log(SunCalcCartesian.getY(transformDate, 50.111512, 8.680506));
+    console.log(SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506));
+    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
     light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = Controls.sunGrid;
 
