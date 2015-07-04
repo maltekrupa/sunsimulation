@@ -22,10 +22,13 @@ var SUN_HEIGHT = 125;
 
 // Define controls for dat.GUI
 var Controls = new function() {
+    // Environment
     this.shadow = 0.5;
+    this.sunGrid = true;
+    // Objects
     this.distanceHouse = 15;
     this.distanceNewHouse = 30;
-    this.sunGrid = true;
+
 };
 
 function init() {
@@ -43,7 +46,7 @@ function init() {
         0.1,                                            // Near plane
         10000                                           // Far plane
     );
-    camera.position.set( 75, 75, 75 );
+    camera.position.set( 400, 400, 400 );
     camera.lookAt( scene.position );
 
     // Configure keyboard controls 
@@ -193,12 +196,12 @@ function buildGround( radius ) {
 function buildAxes( length ) {
     var axes = new THREE.Object3D();
 
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
-    axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
+    axes.add( buildAxis( new THREE.Vector3( 0, 0.2, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
 
     return axes;
 }
@@ -241,10 +244,16 @@ function onKeyDown( event ) {
 
 window.onload = function() {
     var gui = new dat.GUI();
-    gui.add(Controls, 'shadow', 0, 1);
+
+    var f1 = gui.addFolder('Environment');
+    gui.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
+    gui.add(Controls, 'sunGrid');
+
+    var f2 = gui.addFolder('Objects');
     gui.add(Controls, 'distanceHouse', 0, 100);
     gui.add(Controls, 'distanceNewHouse', 0, 100);
-    gui.add(Controls, 'sunGrid');
+
+    f1.open();
 
     init();
     animate();
