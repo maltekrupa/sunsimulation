@@ -48,9 +48,18 @@ function buildNewHouse( x, y, z, distanceFromCenter ) {
 }
 
 function buildGround( radius ) {
+    // Load texture
+    var textureUrl = 'images/grasslight-small.jpg'
+    var texture = THREE.ImageUtils.loadTexture(textureUrl);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.x= 10
+    texture.repeat.y= 10
+    texture.anisotropy = renderer.getMaxAnisotropy()
+
     var segments = 128;
     var geometry = new THREE.CircleGeometry( radius, segments );
-    var material = new THREE.MeshLambertMaterial( { color: 0x008000 } );
+    var material = new THREE.MeshLambertMaterial( { map : texture, emissive: 'green' } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = 0;
     mesh.position.y = 0;
