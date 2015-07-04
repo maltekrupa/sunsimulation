@@ -51,7 +51,7 @@ function init() {
 
     // Configure keyboard controls 
     kcontrols = new THREE.FlyControls( camera );
-    kcontrols.movementSpeed = 1000;
+    kcontrols.movementSpeed = 100;
     kcontrols.domElement = document.body;
     kcontrols.rollSpeed = Math.PI / 24;
     kcontrols.autoForward = false;
@@ -77,15 +77,18 @@ function init() {
     var ambient = new THREE.AmbientLight( 0x404040 );
     scene.add( ambient );
 
+    // Add a light source as 'sun'.
     light = buildLight();
     scene.add(light);
 
+    // Define who is casting and receiving shadows.
     house.castShadow = true;
     house.receiveShadow = true;
     newHouse.castShadow = true;
     newHouse.receiveShadow = true;
     ground.receiveShadow = true;
 
+    // Define renderer settings
     renderer.setClearColor( 0xdddddd, 1);
     renderer.shadowMapEnabled = true;
     renderer.shadowMapSoft = true;
@@ -107,11 +110,12 @@ function init() {
 function render() {
     var delta = clock.getDelta();
 
+    // If we press M on the keyboard, the position of the camera changes.
     if(pressM) {
         camera.position.x += mouseX * 0.05;
+        // Returns a value between -1000 and 1000
         camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
         camera.lookAt( scene.position );
-        camera.updateProjectionMatrix();
     }
 
     // Speed of sun movement (time for a full loop in seconds)
@@ -123,10 +127,11 @@ function render() {
     light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = Controls.sunGrid;
 
+    // Update positions of the houses after change in gui
     house.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
 
-    kcontrols.movementSpeed = 50;
+    // Update the controls position
     kcontrols.update( delta );
 
     renderer.render( scene, camera );
