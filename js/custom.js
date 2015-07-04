@@ -141,12 +141,12 @@ window.onload = function() {
     var gui = new dat.GUI();
 
     var f1 = gui.addFolder('Environment');
-    gui.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
-    gui.add(Controls, 'sunGrid');
+    f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
+    f1.add(Controls, 'sunGrid');
 
     var f2 = gui.addFolder('Objects');
-    gui.add(Controls, 'distanceHouse', 0, 100);
-    gui.add(Controls, 'distanceNewHouse', 0, 100);
+    f2.add(Controls, 'distanceHouse', 0, 100);
+    f2.add(Controls, 'distanceNewHouse', 0, 100);
 
     f1.open();
 
