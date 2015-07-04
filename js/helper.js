@@ -151,6 +151,7 @@ function updateTime() {
     objectOfTime.position.x = RADIUS/4;
     objectOfTime.position.z = 30;
     objectOfTime.rotation.x = (Math.PI / 2) * -1;
+    objectOfTime.castShadow = true;
     scene.add(objectOfTime);
 }
 
@@ -158,7 +159,6 @@ function updateTime() {
 // http://stackoverflow.com/questions/18366229/is-it-possible-to-create-a-button-using-dat-gui/18380889#18380889
 var timeButton = { set:function(){
     var timeString = String.format("{0}-{1}-{2} {3}:{4}", Controls.year, Controls.month, Controls.day, Controls.hour, Controls.minute);
-    console.log(timeString);
     var timestamp = moment(timeString, "YYYY-M-D HH:mm");
     if( !timestamp.isValid() ) {
         alert("This does not look like a valid date.");
