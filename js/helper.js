@@ -15,7 +15,7 @@ function buildLight() {
     var sun = new THREE.Object3D();
 
     // Light object
-    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var geometry = new THREE.SphereGeometry( 30, 32, 32 );
     var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
     var mesh = new THREE.Mesh( geometry, material );
     sun.add( mesh );
