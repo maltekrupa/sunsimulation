@@ -140,6 +140,21 @@ function onKeyDown( event ) {
     // C is pressed.
     if(keyCode==67) {
         views[0].camera.position.set( 400, 400, 400 );
+        views[0].camera.lookAt( scene.position );
+    }
+    // V is pressed.
+    if(keyCode==86) {
+        views[1].camera.position.set( 0, 200, 0 );
+        views[1].camera.lookAt( scene.position );
+    }
+    // B is pressed.
+    if(keyCode==66) {
+        views[2].camera.position.set( 0, 100, 200 );
+        views[2].camera.lookAt( scene.position );
+    }
+    // X is pressed.
+    if(keyCode==88) {
+        views[0].camera.lookAt( scene.position );
     }
     // Space is pressed.
     if(keyCode==32) {
@@ -207,3 +222,18 @@ var timeButton = { set:function(){
     tmpDelta = 1;
     updateTimeText();
 }};
+
+var cameraButton = {
+    set_upper_camera:function(){
+        // Update the position
+        views[2].camera.position.x = views[0].camera.position.x;
+        views[2].camera.position.y = views[0].camera.position.y;
+        views[2].camera.position.z = views[0].camera.position.z;
+    },
+    set_lower_camera:function(){
+        // Update the position
+        views[1].camera.position.x = views[0].camera.position.x;
+        views[1].camera.position.y = views[0].camera.position.y;
+        views[1].camera.position.z = views[0].camera.position.z;
+    },
+};

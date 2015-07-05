@@ -282,20 +282,27 @@ window.onload = function() {
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
     f1.add(Controls, 'fog', 0.001, 0.0025).step(0.0001);
-    var f11 = gui.addFolder('Date/Time');
-    f11.add(Controls, 'day', 1, 31).step(1).listen();
-    f11.add(Controls, 'month', 1, 12).step(1).listen();
-    f11.add(Controls, 'year', 1900, 2100).step(1).listen();
-    f11.add(Controls, 'hour', 0, 23).step(1).listen();
-    f11.add(Controls, 'minute', 0, 59).step(1).listen();
-    f11.add(timeButton, 'set');
-    f11.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
+    var f2 = gui.addFolder('Date/Time');
+    f2.add(Controls, 'day', 1, 31).step(1).listen();
+    f2.add(Controls, 'month', 1, 12).step(1).listen();
+    f2.add(Controls, 'year', 1900, 2100).step(1).listen();
+    f2.add(Controls, 'hour', 0, 23).step(1).listen();
+    f2.add(Controls, 'minute', 0, 59).step(1).listen();
+    f2.add(timeButton, 'set');
+    f2.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
 
-    var f2 = gui.addFolder('Objects');
-    f2.add(Controls, 'distanceHouse', 0, 100);
-    f2.add(Controls, 'distanceNewHouse', 0, 100);
+    var f3 = gui.addFolder('Objects');
+    f3.add(Controls, 'distanceHouse', 0, 100);
+    f3.add(Controls, 'distanceNewHouse', 0, 100);
+
+    var f4 = gui.addFolder('Cameras');
+    f4.add(cameraButton, 'set_upper_camera');
+    f4.add(cameraButton, 'set_lower_camera');
 
     f1.open();
+    f2.open();
+    f3.open();
+    f4.open();
 
     init();
     animate();
