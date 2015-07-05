@@ -118,12 +118,8 @@ function init() {
     // A currentTime dateobject for the simulated time
     currentTime = moment();
 
-    // Update GUI time and date to current values
-    Controls.day    = currentTime.date();
-    Controls.month  = currentTime.month() + 1;
-    Controls.year   = currentTime.year();
-    Controls.hour   = currentTime.hour();
-    Controls.minute = currentTime.minute();
+    // Update Controll values
+    updateControllerDate();
 
     // Configure keyboard controls 
     kcontrols = new THREE.FlyControls( views[0].camera );

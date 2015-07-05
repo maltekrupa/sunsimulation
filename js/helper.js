@@ -167,7 +167,18 @@ function updateTimeText() {
         objectOfTime.castShadow = true;
         scene.add(objectOfTime);
         tmpDelta = 0;
+        updateControllerDate();
     }
+}
+
+function updateControllerDate() {
+    // Update GUI time and date to current values
+    Controls.day    = currentTime.date();
+    Controls.month  = currentTime.month() + 1;
+    Controls.year   = currentTime.year();
+    Controls.hour   = currentTime.hour();
+    Controls.minute = currentTime.minute();
+
 }
 
 // Update viewport size on window size changes
