@@ -1,7 +1,7 @@
 "use strict";
 
 // Globals
-var camera, scene, renderer, light, views, view;
+var camera, scene, renderer, light, views, view, gui;
 // Windows size
 var windowWidth, windowHeight;
 // Objects
@@ -19,7 +19,7 @@ var kcontrols;
 // Mouse controls;
 var mcontrols;
 // boolean to check if we can move the camera
-var pressM = false;
+var pressM = false, pressSpace = true;
 // A clock to keep track of the time
 var clock, time, delta, tmpDelta = 0.0;
 // Global radius and light height
@@ -99,14 +99,6 @@ function init() {
     scene.fog = new THREE.FogExp2( 0xA8A8A8, 0.001 );
 
     // Camera
-    //camera = new THREE.PerspectiveCamera(
-    //    35,                                             // Field of view
-    //    window.innerWidth / window.innerHeight,         // Aspect ratio
-    //    0.1,                                            // Near plane
-    //    10000                                           // Far plane
-    //);
-    //camera.position.set( 400, 400, 400 );
-    //camera.lookAt( scene.position );
     for (var ii =  0; ii < views.length; ++ii ) {
         view = views[ii];
         camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -125,6 +117,13 @@ function init() {
 
     // A currentTime dateobject for the simulated time
     currentTime = moment();
+
+    // Update GUI time and date to current values
+    Controls.day    = currentTime.date();
+    Controls.month  = currentTime.month() + 1;
+    Controls.year   = currentTime.year();
+    Controls.hour   = currentTime.hour();
+    Controls.minute = currentTime.minute();
 
     // Configure keyboard controls 
     kcontrols = new THREE.FlyControls( views[0].camera );
@@ -212,25 +211,6 @@ function animate() {
     // The time sind intantiation the clock
     time = clock.getElapsedTime();
 
-    // If we press M on the keyboard, the position of the camera changes.
-    if(pressM) {
-        camera.position.x += mouseX * 0.05;
-        // Returns a value between -1000 and 1000
-        camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
-        camera.lookAt( scene.position );
-    }
-
-    // Speed of sun movement (time for a full loop in seconds)
-    var transformDate = currentTime.toDate();
-    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
-    light.shadowDarkness = Controls.shadow;
-    light.shadowCameraVisible = Controls.sunGrid;
-
-    // Renew fog
-    scene.fog.density = Controls.fog;
-
     // Update positions of the houses after change in gui
     house.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
@@ -238,8 +218,32 @@ function animate() {
     // Update the controls position
     kcontrols.update( delta );
 
+    // Renew fog
+    scene.fog.density = Controls.fog;
+
+    // If the simulation is in pause mode, we don't change the sun and don't update time
+    if(pressSpace) {
+        currentTime.add(delta, Controls.delta);
+        tmpDelta += delta;
+
+        // Speed of sun movement (time for a full loop in seconds)
+        var transformDate = currentTime.toDate();
+        light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+        light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+        light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+        light.shadowDarkness = Controls.shadow;
+    }
+
+    // Change visibility of sun grid
+    light.shadowCameraVisible = Controls.sunGrid;
+
     // Update the current time
-    updateTime();
+    updateTimeText();
+
+    // Iterate over all gui controllers to update their values
+    for (var i in dat.gui.__controllers) {
+        gui.__controllers[i].updateDisplay();
+    }
 
     render();
 }
@@ -273,18 +277,18 @@ function render() {
 }
 
 window.onload = function() {
-    var gui = new dat.GUI();
+    gui = new dat.GUI();
 
     var f1 = gui.addFolder('Environment');
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
     f1.add(Controls, 'fog', 0.001, 0.0025).step(0.0001);
     var f11 = gui.addFolder('Date/Time');
-    f11.add(Controls, 'day', 0, 31).step(1);
-    f11.add(Controls, 'month', 0, 12).step(1);
-    f11.add(Controls, 'year', 1900, 2100).step(1);
-    f11.add(Controls, 'hour', 0, 23).step(1);
-    f11.add(Controls, 'minute', 0, 59).step(1);
+    f11.add(Controls, 'day', 1, 31).step(1).listen();
+    f11.add(Controls, 'month', 1, 12).step(1).listen();
+    f11.add(Controls, 'year', 1900, 2100).step(1).listen();
+    f11.add(Controls, 'hour', 0, 23).step(1).listen();
+    f11.add(Controls, 'minute', 0, 59).step(1).listen();
     f11.add(timeButton, 'set');
     f11.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
 

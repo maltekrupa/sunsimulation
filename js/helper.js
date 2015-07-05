@@ -139,21 +139,26 @@ function onKeyDown( event ) {
     }
     // C is pressed.
     if(keyCode==67) {
-        camera.position.set( 400, 400, 400 );
+        views[0].camera.position.set( 400, 400, 400 );
+    }
+    // Space is pressed.
+    if(keyCode==32) {
+        if(pressSpace) {
+            pressSpace = false;
+        } else {
+            pressSpace = true;
+        }
     }
 }
 
-function updateTime() {
-    currentTime.add(delta, Controls.delta);
-    tmpDelta += delta;
+function updateTimeText() {
     if( tmpDelta >= 1 ) {
         // Here we add the delta time from the gui to the current time
         var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
 
         // Update the visible time by exchanging the objects
         scene.remove(objectOfTime);
-        delete(textOfTime);
-        delete(objectOfTime);
+        textOfTime.dispose();
         textOfTime = new THREE.TextGeometry(timeString, textParams);
         objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
         objectOfTime.position.x = RADIUS/4;
@@ -185,4 +190,10 @@ var timeButton = { set:function(){
         return
     }
     currentTime = timestamp;
+    var transformDate = currentTime.toDate();
+    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+    tmpDelta = 1;
+    updateTimeText();
 }};
