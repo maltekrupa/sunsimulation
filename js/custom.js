@@ -19,7 +19,7 @@ var kcontrols;
 // Mouse controls;
 var mcontrols;
 // boolean to check if we can move the camera
-var pressM = false;
+var pressM = false, pressSpace = true;
 // A clock to keep track of the time
 var clock, time, delta, tmpDelta = 0.0;
 // Global radius and light height
@@ -212,34 +212,28 @@ function animate() {
     // The time sind intantiation the clock
     time = clock.getElapsedTime();
 
-    // If we press M on the keyboard, the position of the camera changes.
-    if(pressM) {
-        camera.position.x += mouseX * 0.05;
-        // Returns a value between -1000 and 1000
-        camera.position.x = Math.max( Math.min( camera.position.x, 1000 ), -1000 );
-        camera.lookAt( scene.position );
+    if(pressSpace) {
+        // Speed of sun movement (time for a full loop in seconds)
+        var transformDate = currentTime.toDate();
+        light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+        light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+        light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+        light.shadowDarkness = Controls.shadow;
+        light.shadowCameraVisible = Controls.sunGrid;
+
+        // Renew fog
+        scene.fog.density = Controls.fog;
+
+        // Update positions of the houses after change in gui
+        house.position.x = Controls.distanceHouse * -1;
+        newHouse.position.x = Controls.distanceNewHouse;
+
+        // Update the controls position
+        kcontrols.update( delta );
+
+        // Update the current time
+        updateTime();
     }
-
-    // Speed of sun movement (time for a full loop in seconds)
-    var transformDate = currentTime.toDate();
-    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
-    light.shadowDarkness = Controls.shadow;
-    light.shadowCameraVisible = Controls.sunGrid;
-
-    // Renew fog
-    scene.fog.density = Controls.fog;
-
-    // Update positions of the houses after change in gui
-    house.position.x = Controls.distanceHouse * -1;
-    newHouse.position.x = Controls.distanceNewHouse;
-
-    // Update the controls position
-    kcontrols.update( delta );
-
-    // Update the current time
-    updateTime();
 
     render();
 }

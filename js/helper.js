@@ -139,7 +139,15 @@ function onKeyDown( event ) {
     }
     // C is pressed.
     if(keyCode==67) {
-        camera.position.set( 400, 400, 400 );
+        views[0].camera.position.set( 400, 400, 400 );
+    }
+    // Space is pressed.
+    if(keyCode==32) {
+        if(pressM) {
+            pressSpace = false;
+        } else {
+            pressSpace = true;
+        }
     }
 }
 
@@ -152,8 +160,7 @@ function updateTime() {
 
         // Update the visible time by exchanging the objects
         scene.remove(objectOfTime);
-        delete(textOfTime);
-        delete(objectOfTime);
+        textOfTime.dispose();
         textOfTime = new THREE.TextGeometry(timeString, textParams);
         objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
         objectOfTime.position.x = RADIUS/4;
