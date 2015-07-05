@@ -233,6 +233,13 @@ function animate() {
         sun.children[1].shadowDarkness = Controls.shadow;
     }
 
+    // Disable light of the sun at night
+    if( sun.position.y <= 0 ) {
+        sun.children[1].intensity = 0.0;
+    } else {
+        sun.children[1].intensity = 0.5;
+    }
+
     // Change visibility of sun grid
     sun.children[1].shadowCameraVisible = Controls.sunGrid;
 
