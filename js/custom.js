@@ -121,6 +121,9 @@ function init() {
     // Update Controll values
     updateControllerDate();
 
+    // Set radius on sun movement
+    SunCalcCartesian.setDistance(RADIUS);
+
     // Configure keyboard controls 
     kcontrols = new THREE.FlyControls( views[0].camera );
     kcontrols.movementSpeed = 100;
