@@ -157,10 +157,29 @@ function onKeyDown( event ) {
     if(keyCode==32) {
         if(pressSpace) {
             pressSpace = false;
+            textMaterial = new THREE.MeshBasicMaterial({color: 0xD60F0F });
+            replaceTimeText();
         } else {
             pressSpace = true;
+            textMaterial = new THREE.MeshBasicMaterial({color: 0x000000 });
+            replaceTimeText();
         }
     }
+}
+
+function replaceTimeText() {
+    // Here we add the delta time from the gui to the current time
+    var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
+
+    scene.remove(objectOfTime);
+    textOfTime.dispose();
+    textOfTime = new THREE.TextGeometry(timeString, textParams);
+    objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
+    objectOfTime.position.x = RADIUS/4;
+    objectOfTime.position.z = 30;
+    objectOfTime.rotation.x = (Math.PI / 2) * -1;
+    objectOfTime.castShadow = true;
+    scene.add(objectOfTime);
 }
 
 function resetCamera( number ) {
@@ -170,19 +189,9 @@ function resetCamera( number ) {
 
 function updateTimeText() {
     if( tmpDelta >= 1 ) {
-        // Here we add the delta time from the gui to the current time
-        var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
-
         // Update the visible time by exchanging the objects
-        scene.remove(objectOfTime);
-        textOfTime.dispose();
-        textOfTime = new THREE.TextGeometry(timeString, textParams);
-        objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
-        objectOfTime.position.x = RADIUS/4;
-        objectOfTime.position.z = 30;
-        objectOfTime.rotation.x = (Math.PI / 2) * -1;
-        objectOfTime.castShadow = true;
-        scene.add(objectOfTime);
+        replaceTimeText();
+
         tmpDelta = 0;
         updateControllerDate();
     }
