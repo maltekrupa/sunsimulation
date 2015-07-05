@@ -212,6 +212,14 @@ function animate() {
     // The time sind intantiation the clock
     time = clock.getElapsedTime();
 
+    // Update positions of the houses after change in gui
+    house.position.x = Controls.distanceHouse * -1;
+    newHouse.position.x = Controls.distanceNewHouse;
+
+    // Update the controls position
+    kcontrols.update( delta );
+
+    // If the simulation is in pause mode, we don't change the sun and don't update time
     if(pressSpace) {
         // Speed of sun movement (time for a full loop in seconds)
         var transformDate = currentTime.toDate();
@@ -223,13 +231,6 @@ function animate() {
 
         // Renew fog
         scene.fog.density = Controls.fog;
-
-        // Update positions of the houses after change in gui
-        house.position.x = Controls.distanceHouse * -1;
-        newHouse.position.x = Controls.distanceNewHouse;
-
-        // Update the controls position
-        kcontrols.update( delta );
 
         // Update the current time
         updateTime();
