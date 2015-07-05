@@ -7,21 +7,27 @@ var cos = Math.cos;
 
 var SunCalcCartesian = {};
 
+SunCalcCartesian.distance = 400; //default
+
+SunCalcCartesian.setDistance = function(distance){
+    this.distance = distance;
+};
+
 SunCalcCartesian.getZ = function (date, lat, lng){
     var spheric = SunCalc.getPosition(date, lat, lng);
-    var z =  125 * cos(spheric.altitude) * cos(spheric.azimuth);
+    var z =  this.distance * cos(spheric.altitude) * cos(spheric.azimuth);
     return z;
 };
 
 SunCalcCartesian.getX = function (date, lat, lng) {
     var spheric = SunCalc.getPosition(date, lat, lng);
-    var x = 125 * cos(spheric.altitude) * sin(spheric.azimuth);
+    var x = this.distance * cos(spheric.altitude) * sin(spheric.azimuth);
     return x;
 };
 
 SunCalcCartesian.getY = function (date, lat, lng) {
     var altitude = SunCalc.getPosition(date, lat, lng).altitude;
-    var y = 125 * sin(altitude);
+    var y = this.distance * sin(altitude);
     return y;
 };
 
