@@ -11,23 +11,34 @@ if (!String.format) {
 }
 
 function buildLight() {
+    // Parent object
+    var sun = new THREE.Object3D();
+
+    // Light object
+    var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+    var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
+    var mesh = new THREE.Mesh( geometry, material );
+    sun.add( mesh );
+
     // Lights
     var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(RADIUS, SUN_HEIGHT, 10);
-    light.target.position.set(0, 0, 0);
+    light.target.position.set( 0, 0, 0 );
     light.castShadow = true;
     light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
-    light.shadowCameraNear = 20;
-    light.shadowCameraFar = RADIUS*2;
-    light.shadowCameraLeft = -RADIUS;
-    light.shadowCameraRight = RADIUS;
-    light.shadowCameraTop = RADIUS;
+    light.shadowCameraNear   = 20;
+    light.shadowCameraFar    = RADIUS*2;
+    light.shadowCameraLeft   = -RADIUS;
+    light.shadowCameraRight  = RADIUS;
+    light.shadowCameraTop    = RADIUS;
     light.shadowCameraBottom = -RADIUS;
+    sun.add( light );
 
-    return light
+    sun.position.set( RADIUS, SUN_HEIGHT, 10 );
+
+    return sun;
 }
 
 function buildHouse( x, y, z, distanceFromCenter ) {
@@ -228,9 +239,9 @@ var timeButton = { set:function(){
     }
     currentTime = timestamp;
     var transformDate = currentTime.toDate();
-    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+    sun.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+    sun.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+    sun.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
     tmpDelta = 1;
     updateTimeText();
 }};

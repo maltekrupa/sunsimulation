@@ -1,7 +1,7 @@
 "use strict";
 
 // Globals
-var camera, scene, renderer, light, views, view, gui;
+var camera, scene, renderer, sun, views, view, gui;
 // Windows size
 var windowWidth, windowHeight;
 // Objects
@@ -170,8 +170,8 @@ function init() {
     scene.add( ambient );
 
     // Add a light source as 'sun'.
-    light = buildLight();
-    scene.add(light);
+    sun = buildLight();
+    scene.add(sun);
 
     // Define who is casting and receiving shadows.
     house.castShadow = true;
@@ -227,14 +227,14 @@ function animate() {
 
         // Speed of sun movement (time for a full loop in seconds)
         var transformDate = currentTime.toDate();
-        light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-        light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-        light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
-        light.shadowDarkness = Controls.shadow;
+        sun.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+        sun.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+        sun.children[1].shadowDarkness = Controls.shadow;
     }
 
     // Change visibility of sun grid
-    light.shadowCameraVisible = Controls.sunGrid;
+    sun.children[1].shadowCameraVisible = Controls.sunGrid;
 
     // Update the current time
     updateTimeText();
