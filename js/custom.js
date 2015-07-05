@@ -296,8 +296,10 @@ window.onload = function() {
     f3.add(Controls, 'distanceNewHouse', 0, 100);
 
     var f4 = gui.addFolder('Cameras');
-    f4.add(cameraButton, 'set_upper_camera');
-    f4.add(cameraButton, 'set_lower_camera');
+    f4.add(cameraButton, 'set_upper');
+    f4.add(cameraButton, 'reset_upper');
+    f4.add(cameraButton, 'set_lower');
+    f4.add(cameraButton, 'reset_lower');
 
     f1.open();
     f2.open();

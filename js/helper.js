@@ -139,18 +139,15 @@ function onKeyDown( event ) {
     }
     // C is pressed.
     if(keyCode==67) {
-        views[0].camera.position.set( 400, 400, 400 );
-        views[0].camera.lookAt( scene.position );
+        resetCamera( 0 );
     }
     // V is pressed.
     if(keyCode==86) {
-        views[1].camera.position.set( 0, 200, 0 );
-        views[1].camera.lookAt( scene.position );
+        resetCamera( 1 );
     }
     // B is pressed.
     if(keyCode==66) {
-        views[2].camera.position.set( 0, 100, 200 );
-        views[2].camera.lookAt( scene.position );
+        resetCamera( 2 );
     }
     // X is pressed.
     if(keyCode==88) {
@@ -164,6 +161,11 @@ function onKeyDown( event ) {
             pressSpace = true;
         }
     }
+}
+
+function resetCamera( number ) {
+    views[number].camera.position.set( views[number].eye[0], views[number].eye[1], views[number].eye[2]);
+    views[number].camera.lookAt( scene.position );
 }
 
 function updateTimeText() {
@@ -207,6 +209,7 @@ function updateSize() {
 
 // This is a custom function for a simulated button in dat GUI
 // http://stackoverflow.com/questions/18366229/is-it-possible-to-create-a-button-using-dat-gui/18380889#18380889
+// Update time drawn on ground after click on button
 var timeButton = { set:function(){
     var timeString = String.format("{0}-{1}-{2} {3}:{4}", Controls.year, Controls.month, Controls.day, Controls.hour, Controls.minute);
     var timestamp = moment(timeString, "YYYY-M-D HH:mm");
@@ -223,17 +226,24 @@ var timeButton = { set:function(){
     updateTimeText();
 }};
 
+// Change extra cameras on button
 var cameraButton = {
-    set_upper_camera:function(){
+    set_upper:function(){
         // Update the position
         views[2].camera.position.x = views[0].camera.position.x;
         views[2].camera.position.y = views[0].camera.position.y;
         views[2].camera.position.z = views[0].camera.position.z;
     },
-    set_lower_camera:function(){
+    set_lower:function(){
         // Update the position
         views[1].camera.position.x = views[0].camera.position.x;
         views[1].camera.position.y = views[0].camera.position.y;
         views[1].camera.position.z = views[0].camera.position.z;
+    },
+    reset_upper:function(){
+        resetCamera( 2 );
+    },
+    reset_lower:function(){
+        resetCamera( 1 );
     },
 };
