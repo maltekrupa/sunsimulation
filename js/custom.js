@@ -99,14 +99,6 @@ function init() {
     scene.fog = new THREE.FogExp2( 0xA8A8A8, 0.001 );
 
     // Camera
-    //camera = new THREE.PerspectiveCamera(
-    //    35,                                             // Field of view
-    //    window.innerWidth / window.innerHeight,         // Aspect ratio
-    //    0.1,                                            // Near plane
-    //    10000                                           // Far plane
-    //);
-    //camera.position.set( 400, 400, 400 );
-    //camera.lookAt( scene.position );
     for (var ii =  0; ii < views.length; ++ii ) {
         view = views[ii];
         camera = new THREE.PerspectiveCamera( view.fov, window.innerWidth / window.innerHeight, 1, 10000 );
