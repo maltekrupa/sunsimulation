@@ -5,7 +5,7 @@ var camera, scene, renderer, light, views, view, gui;
 // Windows size
 var windowWidth, windowHeight;
 // Objects
-var house, ground, newHouse;
+var houseDae, ground, newHouse;
 // Mouse positions
 var mouseX = 0, mouseY = 0;
 // Time and date
@@ -76,7 +76,7 @@ var views = [
         bottom: 0.5,
         width: 0.5,
         height: 0.5,
-        eye: [ 0, 100, 200 ],
+        eye: [ -19.6, 4.7, 5.1 ],
         up: [ 0, 1, 0 ],
         fov: 60,
         updateCamera: function ( camera, scene, mouseX, mouseY ) {
@@ -84,10 +84,34 @@ var views = [
                 camera.position.x += mouseX * 0.05;
                 camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), -2000 );
             }
-            camera.lookAt( scene.position );
+            camera.lookAt(new THREE.Vector3(0,10,0));
         }
     }
 ];
+
+function loadHouse() {
+    var loader = new THREE.ColladaLoader();
+
+    //loader.options.convertUpAxis = true;
+    loader.load( 'house.dae', function ( house ) {
+
+        // Grab the collada scene data:
+        houseDae = house.scene;
+        houseDae.rotation.y = (Math.PI / 2) * 1
+        houseDae.scale.x = houseDae.scale.y = houseDae.scale.z = 0.02;
+        houseDae.position.x = 15 * -1;
+        houseDae.position.y = 0;
+        houseDae.position.z = 0;
+        //scene.add(house.scene);
+        // Scale-up the model so that we can see i
+        //dae.scale.x = dae.scale.y = dae.scale.z = 25.0;
+        init();
+        animate();
+    });
+
+}
+
+
 
 function init() {
     // Renderer
@@ -109,6 +133,9 @@ function init() {
         camera.up.y = view.up[ 1 ];
         camera.up.z = view.up[ 2 ];
         camera.lookAt( scene.position );
+        if(ii == 2){
+            camera.lookAt(new THREE.Vector3(0,10,0));
+        }
         view.camera = camera;
     }
 
@@ -141,9 +168,8 @@ function init() {
     var axes = buildAxes( 1000 );
     scene.add(axes);
 
+    scene.add(houseDae);
     // Insert custom stuff
-    house = buildHouse(10, 10, 10, 15);                 // A house
-    scene.add( house );
     newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
     scene.add( newHouse );
     ground = buildGround( RADIUS );                         // The ground
@@ -175,8 +201,8 @@ function init() {
     scene.add(light);
 
     // Define who is casting and receiving shadows.
-    house.castShadow = true;
-    house.receiveShadow = true;
+    houseDae.castShadow = true;
+    houseDae.receiveShadow = true;
     newHouse.castShadow = true;
     newHouse.receiveShadow = true;
     ground.receiveShadow = true;
@@ -212,7 +238,7 @@ function animate() {
     time = clock.getElapsedTime();
 
     // Update positions of the houses after change in gui
-    house.position.x = Controls.distanceHouse * -1;
+    houseDae.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
 
     // Update the controls position
@@ -245,6 +271,7 @@ function animate() {
         gui.__controllers[i].updateDisplay();
     }
 
+    console.log(views[0].camera.position);
     render();
 }
 
@@ -298,6 +325,6 @@ window.onload = function() {
 
     f1.open();
 
-    init();
-    animate();
+    loadHouse();
+
 };

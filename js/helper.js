@@ -10,6 +10,26 @@ if (!String.format) {
   };
 }
 
+
+//function loadHouse() {
+//    var loader = new THREE.ColladaLoader();
+//    var dae;
+//
+//    //loader.options.convertUpAxis = true;
+//    loader.load( 'house.dae', function ( house ) {
+//
+//        // Grab the collada scene data:
+//        dae = house.scene;
+//
+//        console.log(house.scene);
+//        // Scale-up the model so that we can see it:
+//        //dae.scale.x = dae.scale.y = dae.scale.z = 25.0;
+//    });
+//
+//    console.log(dae);
+//    return dae;
+//}
+
 function buildLight() {
     // Lights
     var light = new THREE.SpotLight(0xffffff);
