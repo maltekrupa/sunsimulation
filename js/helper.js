@@ -143,7 +143,7 @@ function onKeyDown( event ) {
     }
     // Space is pressed.
     if(keyCode==32) {
-        if(pressM) {
+        if(pressSpace) {
             pressSpace = false;
         } else {
             pressSpace = true;
