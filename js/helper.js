@@ -151,9 +151,7 @@ function onKeyDown( event ) {
     }
 }
 
-function updateTime() {
-    currentTime.add(delta, Controls.delta);
-    tmpDelta += delta;
+function updateTimeText() {
     if( tmpDelta >= 1 ) {
         // Here we add the delta time from the gui to the current time
         var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
@@ -191,4 +189,10 @@ var timeButton = { set:function(){
         return
     }
     currentTime = timestamp;
+    var transformDate = currentTime.toDate();
+    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+    tmpDelta = 1;
+    updateTimeText();
 }};
