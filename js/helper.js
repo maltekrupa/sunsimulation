@@ -31,23 +31,34 @@ if (!String.format) {
 //}
 
 function buildLight() {
+    // Parent object
+    var sun = new THREE.Object3D();
+
+    // Light object
+    var geometry = new THREE.SphereGeometry( 30, 32, 32 );
+    var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
+    var mesh = new THREE.Mesh( geometry, material );
+    sun.add( mesh );
+
     // Lights
-    var light = new THREE.SpotLight(0xffffff);
-    light.position.set(RADIUS, SUN_HEIGHT, 10);
-    light.target.position.set(0, 0, 0);
+    var light = new THREE.DirectionalLight(0xffffff);
+    light.target.position.set( 0, 0, 0 );
     light.castShadow = true;
     light.shadowDarkness = Controls.shadow;
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
-    light.shadowCameraNear = 20;
-    light.shadowCameraFar = RADIUS*2;
-    light.shadowCameraLeft = -RADIUS;
-    light.shadowCameraRight = RADIUS;
-    light.shadowCameraTop = RADIUS;
+    light.shadowCameraNear   = 20;
+    light.shadowCameraFar    = RADIUS*2;
+    light.shadowCameraLeft   = -RADIUS;
+    light.shadowCameraRight  = RADIUS;
+    light.shadowCameraTop    = RADIUS;
     light.shadowCameraBottom = -RADIUS;
+    sun.add( light );
 
-    return light
+    sun.position.set( RADIUS, SUN_HEIGHT, 10 );
+
+    return sun;
 }
 
 function buildHouse( x, y, z, distanceFromCenter ) {
@@ -159,35 +170,72 @@ function onKeyDown( event ) {
     }
     // C is pressed.
     if(keyCode==67) {
-        views[0].camera.position.set( 400, 400, 400 );
+        resetCamera( 0 );
+    }
+    // V is pressed.
+    if(keyCode==86) {
+        resetCamera( 1 );
+    }
+    // B is pressed.
+    if(keyCode==66) {
+        resetCamera( 2 );
+    }
+    // X is pressed.
+    if(keyCode==88) {
+        views[0].camera.lookAt( scene.position );
     }
     // Space is pressed.
     if(keyCode==32) {
         if(pressSpace) {
             pressSpace = false;
+            textMaterial = new THREE.MeshBasicMaterial({color: 0xD60F0F });
+            replaceTimeText();
         } else {
             pressSpace = true;
+            textMaterial = new THREE.MeshBasicMaterial({color: 0x000000 });
+            replaceTimeText();
         }
     }
 }
 
+function replaceTimeText() {
+    // Here we add the delta time from the gui to the current time
+    var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
+
+    scene.remove(objectOfTime);
+    textOfTime.dispose();
+    textOfTime = new THREE.TextGeometry(timeString, textParams);
+    objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
+    objectOfTime.position.x = RADIUS/4;
+    objectOfTime.position.z = 30;
+    objectOfTime.rotation.x = (Math.PI / 2) * -1;
+    objectOfTime.castShadow = true;
+    scene.add(objectOfTime);
+}
+
+function resetCamera( number ) {
+    views[number].camera.position.set( views[number].eye[0], views[number].eye[1], views[number].eye[2]);
+    views[number].camera.lookAt( scene.position );
+}
+
 function updateTimeText() {
     if( tmpDelta >= 1 ) {
-        // Here we add the delta time from the gui to the current time
-        var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
-
         // Update the visible time by exchanging the objects
-        scene.remove(objectOfTime);
-        textOfTime.dispose();
-        textOfTime = new THREE.TextGeometry(timeString, textParams);
-        objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
-        objectOfTime.position.x = RADIUS/4;
-        objectOfTime.position.z = 30;
-        objectOfTime.rotation.x = (Math.PI / 2) * -1;
-        objectOfTime.castShadow = true;
-        scene.add(objectOfTime);
+        replaceTimeText();
+
         tmpDelta = 0;
+        updateControllerDate();
     }
+}
+
+function updateControllerDate() {
+    // Update GUI time and date to current values
+    Controls.day    = currentTime.date();
+    Controls.month  = currentTime.month() + 1;
+    Controls.year   = currentTime.year();
+    Controls.hour   = currentTime.hour();
+    Controls.minute = currentTime.minute();
+
 }
 
 // Update viewport size on window size changes
@@ -195,13 +243,13 @@ function updateSize() {
     if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
         windowWidth  = window.innerWidth;
         windowHeight = window.innerHeight -4;
-        console.log(windowHeight, windowWidth);
         renderer.setSize ( windowWidth,windowHeight );
     }
 }
 
 // This is a custom function for a simulated button in dat GUI
 // http://stackoverflow.com/questions/18366229/is-it-possible-to-create-a-button-using-dat-gui/18380889#18380889
+// Update time drawn on ground after click on button
 var timeButton = { set:function(){
     var timeString = String.format("{0}-{1}-{2} {3}:{4}", Controls.year, Controls.month, Controls.day, Controls.hour, Controls.minute);
     var timestamp = moment(timeString, "YYYY-M-D HH:mm");
@@ -211,9 +259,31 @@ var timeButton = { set:function(){
     }
     currentTime = timestamp;
     var transformDate = currentTime.toDate();
-    light.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-    light.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-    light.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+    sun.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
+    sun.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
+    sun.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
     tmpDelta = 1;
     updateTimeText();
 }};
+
+// Change extra cameras on button
+var cameraButton = {
+    set_upper:function(){
+        // Update the position
+        views[2].camera.position.x = views[0].camera.position.x;
+        views[2].camera.position.y = views[0].camera.position.y;
+        views[2].camera.position.z = views[0].camera.position.z;
+    },
+    set_lower:function(){
+        // Update the position
+        views[1].camera.position.x = views[0].camera.position.x;
+        views[1].camera.position.y = views[0].camera.position.y;
+        views[1].camera.position.z = views[0].camera.position.z;
+    },
+    reset_upper:function(){
+        resetCamera( 2 );
+    },
+    reset_lower:function(){
+        resetCamera( 1 );
+    },
+};
