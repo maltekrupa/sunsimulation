@@ -186,7 +186,6 @@ function updateSize() {
     if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
         windowWidth  = window.innerWidth;
         windowHeight = window.innerHeight -4;
-        console.log(windowHeight, windowWidth);
         renderer.setSize ( windowWidth,windowHeight );
     }
 }
