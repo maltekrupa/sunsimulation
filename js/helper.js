@@ -169,8 +169,9 @@ function updateTime() {
 function updateSize() {
     if ( windowWidth != window.innerWidth || windowHeight != window.innerHeight ) {
         windowWidth  = window.innerWidth;
-        windowHeight = window.innerHeight;
-        renderer.setSize ( windowWidth, windowHeight );
+        windowHeight = window.innerHeight -4;
+        console.log(windowHeight, windowWidth);
+        renderer.setSize ( windowWidth,windowHeight );
     }
 }
 
