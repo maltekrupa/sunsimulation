@@ -40,8 +40,11 @@ var Controls = new function() {
     this.minute = 27;
     this.delta = 'm';
     // Objects
-    this.distanceNewHouse = 30;
-
+    this.pos_x = 30;
+    this.pos_z = 0;
+    this.size_x = 1;
+    this.size_y = 1;
+    this.size_z = 1;
 };
 
 var views = [
@@ -238,7 +241,9 @@ function animate() {
     time = clock.getElapsedTime();
 
     // Update positions of the houses after change in gui
-    newHouse.position.x = Controls.distanceNewHouse;
+    newHouse.position.x = Controls.pos_x;
+    newHouse.position.z = Controls.pos_z;
+    newHouse.scale.set( Controls.size_x, Controls.size_y, Controls.size_z );
 
     // Update the controls position
     kcontrols.update( delta );
@@ -324,8 +329,13 @@ window.onload = function() {
     f2.add(timeButton, 'set');
     f2.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
 
-    var f3 = gui.addFolder('Objects');
-    f3.add(Controls, 'distanceNewHouse', 0, 100);
+    // Defining size and position of the new house.
+    var f3 = gui.addFolder('New House');
+    f3.add(Controls, 'pos_x', 0, 100);
+    f3.add(Controls, 'pos_z', RADIUS*-1, RADIUS);
+    f3.add(Controls, 'size_x', 0.1, 5);
+    f3.add(Controls, 'size_y', 0.1, 5);
+    f3.add(Controls, 'size_z', 0.1, 5);
 
     var f4 = gui.addFolder('Cameras');
     f4.add(cameraButton, 'set_upper');
