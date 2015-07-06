@@ -17,6 +17,7 @@ function buildLight() {
     // Light object
     var geometry = new THREE.SphereGeometry( 30, 32, 32 );
     var material = new THREE.MeshPhongMaterial();
+    // Source of the sun: http://xnameetingpoint.weebly.com/uploads/7/4/1/2/7412327/2399293_orig.png
     material.map = THREE.ImageUtils.loadTexture('images/sun.png')
     var mesh     = new THREE.Mesh( geometry, material );
     sun.add( mesh );
@@ -55,6 +56,7 @@ function buildHouse( x, y, z, distanceFromCenter ) {
 function buildNewHouse( x, y, z, distanceFromCenter ) {
     var geometry    = new THREE.BoxGeometry( x, y, z );
     var material    = new THREE.MeshPhongMaterial();
+    // Source of the hochhaus: https://pixabay.com/static/uploads/photo/2015/02/05/12/18/wall-624932_640.jpg
     material.map    = THREE.ImageUtils.loadTexture('images/hochhaus.jpg')
     var mesh        = new THREE.Mesh( geometry, material );
     mesh.position.x = distanceFromCenter;

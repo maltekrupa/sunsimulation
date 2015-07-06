@@ -84,7 +84,7 @@ var views = [
         bottom: 0.5,
         width: 0.5,
         height: 0.5,
-        eye: [ -19.6, 4.7, 5.1 ],
+        eye: [ 0, 10, 40 ],
         up: [ 0, 1, 0 ],
         fov: 60,
         updateCamera: function ( camera, scene, mouseX, mouseY ) {
@@ -105,14 +105,21 @@ function loadHouse() {
 
         // Grab the collada scene data:
         houseDae = house.scene;
-        houseDae.rotation.y = (Math.PI / 2) * 1
+        houseDae.rotation.x = (Math.PI / 2) * -1
+        houseDae.rotation.z = (Math.PI / 2)
         houseDae.scale.x = houseDae.scale.y = houseDae.scale.z = 0.02;
         houseDae.position.x = 15 * -1;
         houseDae.position.y = 0;
-        houseDae.position.z = 0;
-        //scene.add(house.scene);
-        // Scale-up the model so that we can see i
-        //dae.scale.x = dae.scale.y = dae.scale.z = 25.0;
+        houseDae.position.z = 15;
+
+        var daemesh = houseDae.children[0];
+        for (var i =  0; i < daemesh.children.length; i++ ) {
+            daemesh.children[i].castShadow = true;
+            daemesh.children[i].receiveShadow = true;
+        }
+
+        houseDae.scale.set( 0.2, 0.2, 0.2 );
+
         init();
         animate();
     });
