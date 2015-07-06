@@ -25,6 +25,8 @@ var clock, time, delta, tmpDelta = 0.0;
 // Global radius and light height
 var RADIUS = 400;
 var SUN_HEIGHT = 125;
+// TextBox for information about the simulations status.
+var tB;
 
 // Define controls for dat.GUI
 var Controls = new function() {
@@ -68,7 +70,7 @@ var views = [
         height: 0.5,
         eye: [ 0, 200, 0 ],
         up: [ 0, 1, 0 ],
-        fov: 45,
+        fov: 60,
         updateCamera: function ( camera, scene, mouseX, mouseY ) {
         //  camera.position.x -= mouseX * 0.05;
         //  camera.position.x = Math.max( Math.min( camera.position.x, 2000 ), -2000 );
@@ -114,8 +116,6 @@ function loadHouse() {
     });
 
 }
-
-
 
 function init() {
     // Renderer
@@ -181,23 +181,6 @@ function init() {
     scene.add( newHouse );
     ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
-
-    // Create text of current simulation time
-    textParams = {
-        size:           15,    // size of the text
-        height:     0.5,   // thickness to extrude text
-        curveSegments: 3,       // number of points on the curves
-        font:           'helvetiker',       // font name
-        weight:         'normal',       // font weight (normal, bold)
-        style:      'normal',       // font style  (normal, italics)
-    }
-    textMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
-    textOfTime = new THREE.TextGeometry(currentTime.toString(), textParams);
-    objectOfTime = new THREE.Mesh(textOfTime, textMaterial); 
-    objectOfTime.position.x = RADIUS/4;
-    objectOfTime.position.z = 30;
-    objectOfTime.rotation.x = (Math.PI / 2) * -1;
-    scene.add(objectOfTime);
 
     // Ambient light to add some indirect lightning to the scene.
     var ambient = new THREE.AmbientLight( 0x404040 );
@@ -318,6 +301,12 @@ function render() {
 }
 
 window.onload = function() {
+    // Add textbox with information about the scene
+    tB = document.createElement('div');
+    tB.setAttribute("id", "information");
+    tB.innerHTML = "hi there!";
+    document.body.appendChild(tB);
+
     gui = new dat.GUI();
 
     var f1 = gui.addFolder('Environment');

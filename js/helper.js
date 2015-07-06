@@ -10,26 +10,6 @@ if (!String.format) {
   };
 }
 
-
-//function loadHouse() {
-//    var loader = new THREE.ColladaLoader();
-//    var dae;
-//
-//    //loader.options.convertUpAxis = true;
-//    loader.load( 'house.dae', function ( house ) {
-//
-//        // Grab the collada scene data:
-//        dae = house.scene;
-//
-//        console.log(house.scene);
-//        // Scale-up the model so that we can see it:
-//        //dae.scale.x = dae.scale.y = dae.scale.z = 25.0;
-//    });
-//
-//    console.log(dae);
-//    return dae;
-//}
-
 function buildLight() {
     // Parent object
     var sun = new THREE.Object3D();
@@ -204,28 +184,11 @@ function onKeyDown( event ) {
         if(pressSpace) {
             pressSpace = false;
             textMaterial = new THREE.MeshBasicMaterial({color: 0xD60F0F });
-            replaceTimeText();
         } else {
             pressSpace = true;
             textMaterial = new THREE.MeshBasicMaterial({color: 0x000000 });
-            replaceTimeText();
         }
     }
-}
-
-function replaceTimeText() {
-    // Here we add the delta time from the gui to the current time
-    var timeString = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
-
-    scene.remove(objectOfTime);
-    textOfTime.dispose();
-    textOfTime = new THREE.TextGeometry(timeString, textParams);
-    objectOfTime = new THREE.Mesh(textOfTime, textMaterial);
-    objectOfTime.position.x = RADIUS/4;
-    objectOfTime.position.z = 30;
-    objectOfTime.rotation.x = (Math.PI / 2) * -1;
-    objectOfTime.castShadow = true;
-    scene.add(objectOfTime);
 }
 
 function resetCamera( number ) {
@@ -234,13 +197,22 @@ function resetCamera( number ) {
 }
 
 function updateTimeText() {
-    if( tmpDelta >= 1 ) {
-        // Update the visible time by exchanging the objects
-        replaceTimeText();
-
-        tmpDelta = 0;
-        updateControllerDate();
+    var tbDate = currentTime.format('YYYY-MM-DDTHH:mm:ss ZZ');
+    if(pressSpace) {
+        var tbState = '<p>Simulation state: <span style="color:black;background-color:white">RUNNING</span>.</p>';
+    } else {
+        var tbState = '<p>Simulation state: <span style="color:red;background-color:white">STOPPED</span>.</p>';
     }
+    var transformDate = currentTime.toDate();
+    var lat = parseFloat(Controls.Latitude);
+    var lon = parseFloat(Controls.Longitude);
+    var sunPosition = SunCalc.getPosition(transformDate, lat, lon);
+    var azimuth = sunPosition.azimuth * 180 / Math.PI;
+    var tbAzimuth = String.format("<p>Azimuth: {0} - 0 = South, 180 = North</p>", azimuth.toFixed(3));
+    var altitude = sunPosition.altitude
+    var tbAltitude = String.format("<p>Altitude: {0} - 0 = Horizon, PI/2 = Zenith</p>", altitude.toFixed(3));
+
+    document.getElementById('information').innerHTML = tbDate + tbState + tbAzimuth + tbAltitude;
 }
 
 function updateControllerDate() {
@@ -250,7 +222,6 @@ function updateControllerDate() {
     Controls.year   = currentTime.year();
     Controls.hour   = currentTime.hour();
     Controls.minute = currentTime.minute();
-
 }
 
 // Update viewport size on window size changes
