@@ -40,7 +40,6 @@ var Controls = new function() {
     this.minute = 27;
     this.delta = 'm';
     // Objects
-    this.distanceHouse = 15;
     this.distanceNewHouse = 30;
 
 };
@@ -171,8 +170,8 @@ function init() {
     var compass = buildCompass( RADIUS );
     scene.add( compass );
 
-    scene.add(houseDae);
     // Insert custom stuff
+    scene.add(houseDae);
     newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
     scene.add( newHouse );
     ground = buildGround( RADIUS );                         // The ground
@@ -204,8 +203,6 @@ function init() {
     scene.add(sun);
 
     // Define who is casting and receiving shadows.
-    houseDae.castShadow = true;
-    houseDae.receiveShadow = true;
     newHouse.castShadow = true;
     newHouse.receiveShadow = true;
     ground.receiveShadow = true;
@@ -241,7 +238,6 @@ function animate() {
     time = clock.getElapsedTime();
 
     // Update positions of the houses after change in gui
-    houseDae.position.x = Controls.distanceHouse * -1;
     newHouse.position.x = Controls.distanceNewHouse;
 
     // Update the controls position
@@ -329,7 +325,6 @@ window.onload = function() {
     f2.add(Controls, 'delta', { '1 min' : 'm', '1 hour' : 'h' });
 
     var f3 = gui.addFolder('Objects');
-    f3.add(Controls, 'distanceHouse', 0, 100);
     f3.add(Controls, 'distanceNewHouse', 0, 100);
 
     var f4 = gui.addFolder('Cameras');
