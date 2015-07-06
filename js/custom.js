@@ -164,8 +164,12 @@ function init() {
     //mcontrols.addEventListener( 'change', render );
 
     // Axes
-    var axes = buildAxes( 1000 );
-    scene.add(axes);
+    var axes = buildAxes( RADIUS );
+    scene.add( axes );
+
+    // Add compass
+    var compass = buildCompass( RADIUS );
+    scene.add( compass );
 
     scene.add(houseDae);
     // Insert custom stuff
@@ -277,7 +281,6 @@ function animate() {
         gui.__controllers[i].updateDisplay();
     }
 
-    console.log(views[0].camera.position);
     render();
 }
 

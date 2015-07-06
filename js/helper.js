@@ -102,6 +102,21 @@ function buildGround( radius ) {
     return mesh;
 }
 
+function buildCompass( radius ) {
+    var textParameter = {
+        size:           25,    // size of the text
+        height:     1.5,   // thickness to extrude text
+        curveSegments: 3,       // number of points on the curves
+        font:           'helvetiker',       // font name
+        weight:         'normal',       // font weight (normal, bold)
+        style:      'normal',       // font style  (normal, italics)
+    }
+    text = new THREE.TextGeometry('N', textParameter);
+    north = new THREE.Mesh(textOfTime, textMaterial);
+    north.position.set( 0, RADIUS + RADIUS/8, 1 );
+    return north;
+}
+
 // Get random positions in a radius. Either uniformly distributed or centered ...
 // http://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly/5838991#5838991
 function randomCoordinates( r, uniform ) {
