@@ -16,15 +16,16 @@ function buildLight() {
 
     // Light object
     var geometry = new THREE.SphereGeometry( 30, 32, 32 );
-    var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
-    var mesh = new THREE.Mesh( geometry, material );
+    var material = new THREE.MeshPhongMaterial();
+    material.map = THREE.ImageUtils.loadTexture('images/sun.png')
+    var mesh     = new THREE.Mesh( geometry, material );
     sun.add( mesh );
 
     // Lights
     var light = new THREE.DirectionalLight(0xffffff);
     light.target.position.set( 0, 0, 0 );
-    light.castShadow = true;
-    light.shadowDarkness = Controls.shadow;
+    light.castShadow          = true;
+    light.shadowDarkness      = Controls.shadow;
     light.shadowCameraVisible = true; // only for debugging
 
     // these six values define the boundaries of the yellow box seen above
@@ -42,9 +43,9 @@ function buildLight() {
 }
 
 function buildHouse( x, y, z, distanceFromCenter ) {
-    var geometry = new THREE.BoxGeometry( x, y, z );
-    var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
-    var mesh = new THREE.Mesh( geometry, material );
+    var geometry    = new THREE.BoxGeometry( x, y, z );
+    var material    = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
+    var mesh        = new THREE.Mesh( geometry, material );
     mesh.position.x = distanceFromCenter * -1;
     mesh.position.y = y/2;
     mesh.position.z = 0;
@@ -52,9 +53,10 @@ function buildHouse( x, y, z, distanceFromCenter ) {
 }
 
 function buildNewHouse( x, y, z, distanceFromCenter ) {
-    var geometry = new THREE.BoxGeometry( x, y, z );
-    var material = new THREE.MeshLambertMaterial( { color: 0xFFFFA0 } );
-    var mesh = new THREE.Mesh( geometry, material );
+    var geometry    = new THREE.BoxGeometry( x, y, z );
+    var material    = new THREE.MeshPhongMaterial();
+    material.map    = THREE.ImageUtils.loadTexture('images/hochhaus.jpg')
+    var mesh        = new THREE.Mesh( geometry, material );
     mesh.position.x = distanceFromCenter;
     mesh.position.y = 0;
     mesh.position.z = 0;
@@ -83,18 +85,43 @@ function buildGround( radius ) {
 }
 
 function buildCompass( radius ) {
-    var textParameter = {
-        size:           25,    // size of the text
-        height:     1.5,   // thickness to extrude text
-        curveSegments: 3,       // number of points on the curves
-        font:           'helvetiker',       // font name
-        weight:         'normal',       // font weight (normal, bold)
-        style:      'normal',       // font style  (normal, italics)
+    textParams = {
+        size:           50,
+        height:         5,
+        curveSegments:  3,
+        font:           'helvetiker',
+        weight:         'normal',
+        style:          'normal',
     }
-    text = new THREE.TextGeometry('N', textParameter);
-    north = new THREE.Mesh(textOfTime, textMaterial);
-    north.position.set( 0, RADIUS + RADIUS/8, 1 );
-    return north;
+    var textRadius = RADIUS-50;
+    textMaterial = new THREE.MeshBasicMaterial({color: 0x000000});
+    textNorthMaterial = new THREE.MeshBasicMaterial({color: 0xFA0000});
+    N = new THREE.TextGeometry('N', textParams);
+    north = new THREE.Mesh(N, textNorthMaterial);
+    north.position.set( -20, 1, -textRadius+5 );
+    north.rotation.x = (Math.PI / 2) * -1;
+
+    E = new THREE.TextGeometry('E', textParams);
+    east = new THREE.Mesh(E, textMaterial);
+    east.position.set( textRadius, 1, 25 );
+    east.rotation.x = (Math.PI / 2) * -1;
+
+    S = new THREE.TextGeometry('S', textParams);
+    south = new THREE.Mesh(S, textMaterial);
+    south.position.set( -20, 1, textRadius + 25 );
+    south.rotation.x = (Math.PI / 2) * -1;
+
+    W = new THREE.TextGeometry('W', textParams);
+    west = new THREE.Mesh(W, textMaterial);
+    west.position.set( -textRadius - 25, 1, 25);
+    west.rotation.x = (Math.PI / 2) * -1;
+
+    var comp = new THREE.Object3D();
+    comp.add(north);
+    comp.add(east);
+    comp.add(south);
+    comp.add(west);
+    return comp;
 }
 
 // Get random positions in a radius. Either uniformly distributed or centered ...

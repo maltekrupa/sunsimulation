@@ -44,11 +44,13 @@ var Controls = new function() {
     this.minute = 27;
     this.delta = 'm';
     // Objects
-    this.pos_x = 30;
+    this.pos_x = 50;
     this.pos_z = 0;
-    this.size_x = 1;
-    this.size_y = 1;
-    this.size_z = 1;
+    this.size_x = 3;
+    this.size_y = 6;
+    this.size_z = 3;
+    // Cameras
+    this.cam_y = 200;
 };
 
 var views = [
@@ -230,6 +232,9 @@ function animate() {
     newHouse.position.z = Controls.pos_z;
     newHouse.scale.set( Controls.size_x, Controls.size_y, Controls.size_z );
 
+    // Update position of camera after change in gui
+    views[1].camera.position.y = Controls.cam_y;
+
     // Update the controls position
     kcontrols.update( delta );
 
@@ -337,6 +342,7 @@ window.onload = function() {
     f4.add(cameraButton, 'reset_upper');
     f4.add(cameraButton, 'set_lower');
     f4.add(cameraButton, 'reset_lower');
+    f4.add(Controls, 'cam_y', 20, 1000).step(10);
 
     f1.open();
     f2.open();
