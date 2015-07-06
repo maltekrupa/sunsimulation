@@ -32,6 +32,8 @@ var Controls = new function() {
     this.shadow = 0.5;
     this.sunGrid = true;
     this.fog = 0.001;
+    this.Latitude = "50.111512";
+    this.Longitude = "8.680506";
     // Date/Time
     this.day = 1;
     this.month = 1;
@@ -175,7 +177,7 @@ function init() {
 
     // Insert custom stuff
     scene.add(houseDae);
-    newHouse = buildNewHouse(20, 20, 100, 30);          // The house which should be built
+    newHouse = buildNewHouse(20, 20, 20, 30);          // The house which should be built
     scene.add( newHouse );
     ground = buildGround( RADIUS );                         // The ground
     scene.add( ground );
@@ -258,9 +260,11 @@ function animate() {
 
         // Speed of sun movement (time for a full loop in seconds)
         var transformDate = currentTime.toDate();
-        sun.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
-        sun.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
-        sun.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
+        var lat = parseFloat(Controls.Latitude);
+        var lon = parseFloat(Controls.Longitude);
+        sun.position.x = SunCalcCartesian.getX(transformDate, lat, lon);
+        sun.position.y = SunCalcCartesian.getY(transformDate, lat, lon);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, lat, lon);
         sun.children[1].shadowDarkness = Controls.shadow;
     }
 
@@ -320,6 +324,8 @@ window.onload = function() {
     f1.add(Controls, 'shadow', { Off : 0.0, Mid : 0.5, Full : 1 });
     f1.add(Controls, 'sunGrid');
     f1.add(Controls, 'fog', 0.001, 0.0025).step(0.0001);
+    f1.add(Controls, 'Latitude');
+    f1.add(Controls, 'Longitude');
     var f2 = gui.addFolder('Date/Time');
     f2.add(Controls, 'day', 1, 31).step(1).listen();
     f2.add(Controls, 'month', 1, 12).step(1).listen();
@@ -331,11 +337,11 @@ window.onload = function() {
 
     // Defining size and position of the new house.
     var f3 = gui.addFolder('New House');
-    f3.add(Controls, 'pos_x', 0, 100);
+    f3.add(Controls, 'pos_x', 10, 100);
     f3.add(Controls, 'pos_z', RADIUS*-1, RADIUS);
-    f3.add(Controls, 'size_x', 0.1, 5);
-    f3.add(Controls, 'size_y', 0.1, 5);
-    f3.add(Controls, 'size_z', 0.1, 5);
+    f3.add(Controls, 'size_x', 0.1, 10);
+    f3.add(Controls, 'size_y', 0.1, 10);
+    f3.add(Controls, 'size_z', 0.1, 10);
 
     var f4 = gui.addFolder('Cameras');
     f4.add(cameraButton, 'set_upper');

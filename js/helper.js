@@ -76,7 +76,7 @@ function buildNewHouse( x, y, z, distanceFromCenter ) {
     var material = new THREE.MeshLambertMaterial( { color: 0xFFFFA0 } );
     var mesh = new THREE.Mesh( geometry, material );
     mesh.position.x = distanceFromCenter;
-    mesh.position.y = y/2;
+    mesh.position.y = 0;
     mesh.position.z = 0;
     return mesh;
 }
