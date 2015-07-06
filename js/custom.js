@@ -344,10 +344,7 @@ window.onload = function() {
     f4.add(cameraButton, 'reset_lower');
     f4.add(Controls, 'cam_y', 20, 1000).step(10);
 
-    f1.open();
-    f2.open();
-    f3.open();
-    f4.open();
+    dat.GUI.toggleHide();
 
     loadHouse();
 
