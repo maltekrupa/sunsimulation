@@ -218,6 +218,50 @@ function onKeyDown( event ) {
             textMaterial = new THREE.MeshBasicMaterial({color: 0x000000 });
         }
     }
+    // U is pressed.
+    if(keyCode==85) {
+        currentTime.subtract(1, 'hour');
+        var transformDate = currentTime.toDate();
+        var lat = parseFloat(Controls.Latitude);
+        var lon = parseFloat(Controls.Longitude);
+        sun.position.x = SunCalcCartesian.getX(transformDate, lat, lon);
+        sun.position.y = SunCalcCartesian.getY(transformDate, lat, lon);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, lat, lon);
+        sun.children[1].shadowDarkness = Controls.shadow;
+    }
+    // I is pressed.
+    if(keyCode==73) {
+        currentTime.subtract(1, 'minute');
+        var transformDate = currentTime.toDate();
+        var lat = parseFloat(Controls.Latitude);
+        var lon = parseFloat(Controls.Longitude);
+        sun.position.x = SunCalcCartesian.getX(transformDate, lat, lon);
+        sun.position.y = SunCalcCartesian.getY(transformDate, lat, lon);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, lat, lon);
+        sun.children[1].shadowDarkness = Controls.shadow;
+    }
+    // O is pressed.
+    if(keyCode==79) {
+        currentTime.add(1, 'minute');
+        var transformDate = currentTime.toDate();
+        var lat = parseFloat(Controls.Latitude);
+        var lon = parseFloat(Controls.Longitude);
+        sun.position.x = SunCalcCartesian.getX(transformDate, lat, lon);
+        sun.position.y = SunCalcCartesian.getY(transformDate, lat, lon);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, lat, lon);
+        sun.children[1].shadowDarkness = Controls.shadow;
+    }
+    // P is pressed.
+    if(keyCode==80) {
+        currentTime.add(1, 'hour');
+        var transformDate = currentTime.toDate();
+        var lat = parseFloat(Controls.Latitude);
+        var lon = parseFloat(Controls.Longitude);
+        sun.position.x = SunCalcCartesian.getX(transformDate, lat, lon);
+        sun.position.y = SunCalcCartesian.getY(transformDate, lat, lon);
+        sun.position.z = SunCalcCartesian.getZ(transformDate, lat, lon);
+        sun.children[1].shadowDarkness = Controls.shadow;
+    }
 }
 
 function resetCamera( number ) {
@@ -277,7 +321,6 @@ var timeButton = { set:function(){
     sun.position.x = SunCalcCartesian.getX(transformDate, 50.111512, 8.680506);
     sun.position.y = SunCalcCartesian.getY(transformDate, 50.111512, 8.680506);
     sun.position.z = SunCalcCartesian.getZ(transformDate, 50.111512, 8.680506);
-    tmpDelta = 1;
     updateTimeText();
 }};
 

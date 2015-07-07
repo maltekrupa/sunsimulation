@@ -21,7 +21,7 @@ var mcontrols;
 // boolean to check if we can move the camera
 var pressM = false, pressSpace = true;
 // A clock to keep track of the time
-var clock, time, delta, tmpDelta = 0.0;
+var clock, time, delta;
 // Global radius and light height
 var RADIUS = 400;
 var SUN_HEIGHT = 125;
@@ -251,7 +251,6 @@ function animate() {
     // If the simulation is in pause mode, we don't change the sun and don't update time
     if(pressSpace) {
         currentTime.add(delta, Controls.delta);
-        tmpDelta += delta;
 
         // Speed of sun movement (time for a full loop in seconds)
         var transformDate = currentTime.toDate();
