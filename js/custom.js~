@@ -181,8 +181,8 @@ function init() {
     scene.add( axes );
 
     // Add compass
-//    var compass = buildCompass( RADIUS );
-  //  scene.add( compass );
+    var compass = buildCompass( RADIUS );
+    scene.add( compass );
 
     // Insert custom stuff
     scene.add(houseDae);
