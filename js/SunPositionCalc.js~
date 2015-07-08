@@ -13,13 +13,13 @@ SunCalcCartesian.setDistance = function(distance){
     this.distance = distance;
 };
 
-SunCalcCartesian.getX = function (date, lat, lng){
+SunCalcCartesian.getZ = function (date, lat, lng){
     var spheric = SunCalc.getPosition(date, lat, lng);
     var z =  this.distance * cos(spheric.altitude) * cos(spheric.azimuth);
     return z;
 };
 
-SunCalcCartesian.getZ = function (date, lat, lng) {
+SunCalcCartesian.getX = function (date, lat, lng) {
     var spheric = SunCalc.getPosition(date, lat, lng);
     var x = this.distance * cos(spheric.altitude) * sin(spheric.azimuth);
     return x;
