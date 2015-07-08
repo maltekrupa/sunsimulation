@@ -280,7 +280,7 @@ function updateTimeText() {
     var lat = parseFloat(Controls.Latitude);
     var lon = parseFloat(Controls.Longitude);
     var sunPosition = SunCalc.getPosition(transformDate, lat, lon);
-    var azimuth = (sunPosition.azimuth * 180 / Math.PI) +180;
+    var azimuth = sunPosition.azimuth * 180 / Math.PI;
     var tbAzimuth = String.format("<p>Azimuth: {0} - 0 = South, 180 = North</p>", azimuth.toFixed(3));
     var altitude = sunPosition.altitude
     var tbAltitude = String.format("<p>Altitude: {0} - 0 = Horizon, PI/2 = Zenith</p>", altitude.toFixed(3));
